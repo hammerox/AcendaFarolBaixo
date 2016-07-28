@@ -1,4 +1,4 @@
-package com.hammerox.android.farolnasrodovias;
+package com.hammerox.android.acendaofarolbaixo;
 
 import org.junit.Test;
 

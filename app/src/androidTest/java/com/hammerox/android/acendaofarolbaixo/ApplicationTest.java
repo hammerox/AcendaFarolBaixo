@@ -1,4 +1,4 @@
-package com.hammerox.android.farolnasrodovias;
+package com.hammerox.android.acendaofarolbaixo;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
