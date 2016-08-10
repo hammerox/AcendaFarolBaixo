@@ -2,6 +2,9 @@ package com.hammerox.android.acendaofarolbaixo;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,14 +19,13 @@ import android.widget.TextView;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 
 public class MainActivity extends AppCompatActivity implements OnActivityUpdatedListener {
 
+    private boolean mNotifyUser;
     private StringBuilder mTextLog;
     private TextView mTextView;
     private long mTimeNow;
@@ -123,9 +125,44 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
             Log.d(LOG_TAG, detectedActivity.toString() + " seconds: " + timeDiff);
 
             mLastTime = mTimeNow;
+
+            int activityType = detectedActivity.getType();
+
+            if (detectedActivity.getConfidence() == 100) {
+                switch (activityType) {
+                    // IN_VEHICLE
+                    case 0:
+                        if (mNotifyUser) playNotification();
+                        break;
+                    default:
+                        resetNotificationFlag();
+                        break;
+                }
+            }
         } else {
             mTextView.setText("Null activity");
             Log.d(LOG_TAG, "Null activity");
+        }
+    }
+
+
+    public void playNotification() {
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+            mNotifyUser = false;
+            Log.d(LOG_TAG, "User notified");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void resetNotificationFlag() {
+        if (!mNotifyUser) {
+            mNotifyUser = true;
+            Log.d(LOG_TAG, "User is now prone to receive notification");
         }
     }
 }
