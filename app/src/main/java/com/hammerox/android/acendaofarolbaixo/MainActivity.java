@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.location.DetectedActivity;
 
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private long timeDiff;
 
+    private ToggleButton mToggleDetector;
+
     private static final int LOCATION_PERMISSION_ID = 1001;
     private static final String LOG_TAG = "onActivityUpdated";
 
@@ -42,26 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
         setContentView(R.layout.activity_main);
 
         // Bind event clicks
-        Button startLocation = (Button) findViewById(R.id.button_start);
-        startLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Location permission not granted
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
-                    return;
-                }
-                startLocation();
-            }
-        });
-
-        Button stopLocation = (Button) findViewById(R.id.button_stop);
-        stopLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopLocation();
-            }
-        });
+        mToggleDetector = (ToggleButton) findViewById(R.id.toggle_detector);
 
         // bind textviews
         mTextView = (TextView) findViewById(R.id.textview_activity);
@@ -163,6 +147,24 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
         if (!mNotifyUser) {
             mNotifyUser = true;
             Log.d(LOG_TAG, "User is now prone to receive notification");
+        }
+    }
+
+
+    public void onToggleClicked(View view) {
+        boolean on = ((ToggleButton) view).isChecked();
+
+        if (on) {
+            // Enable detector
+            // Location permission not granted
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
+                return;
+            }
+            startLocation();
+        } else {
+            // Disable detector
+            stopLocation();
         }
     }
 }
