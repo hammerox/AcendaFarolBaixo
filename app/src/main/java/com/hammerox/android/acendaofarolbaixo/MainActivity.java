@@ -6,6 +6,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -13,14 +15,24 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.DetectedActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 
 public class MainActivity extends AppCompatActivity implements OnActivityUpdatedListener {
 
-    private TextView activityText;
+    private StringBuilder mTextLog;
+    private TextView mTextView;
+    private long mTimeNow;
+    private long mLastTime;
+    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private long timeDiff;
 
     private static final int LOCATION_PERMISSION_ID = 1001;
+    private static final String LOG_TAG = "onActivityUpdated";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,25 +62,15 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
         });
 
         // bind textviews
-        activityText = (TextView) findViewById(R.id.textview_activity);
+        mTextView = (TextView) findViewById(R.id.textview_activity);
 
         // Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        // Start string builder
+        mTextLog = new StringBuilder();
+
         showLast();
-    }
-
-
-    private void showActivity(DetectedActivity detectedActivity) {
-        if (detectedActivity != null) {
-            activityText.setText(
-                    String.format("Activity %s with %d%% confidence",
-                            getNameFromType(detectedActivity),
-                            detectedActivity.getConfidence())
-            );
-        } else {
-            activityText.setText("Null activity");
-        }
     }
 
 
@@ -80,14 +82,14 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
 
     private void stopLocation() {
         SmartLocation.with(this).activity().stop();
-        activityText.setText("Activity Recognition stopped!");
+        mTextView.setText("Activity Recognition stopped!");
     }
 
 
     private void showLast() {
         DetectedActivity detectedActivity = SmartLocation.with(this).activity().getLastActivity();
         if (detectedActivity != null) {
-            activityText.setText(
+            mTextView.setText(
                     String.format("[From Cache] Activity %s with %d%% confidence",
                             getNameFromType(detectedActivity),
                             detectedActivity.getConfidence())
@@ -97,25 +99,33 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
 
 
     private String getNameFromType(DetectedActivity activityType) {
-        switch (activityType.getType()) {
-            case DetectedActivity.IN_VEHICLE:
-                return "in_vehicle";
-            case DetectedActivity.ON_BICYCLE:
-                return "on_bicycle";
-            case DetectedActivity.ON_FOOT:
-                return "on_foot";
-            case DetectedActivity.STILL:
-                return "still";
-            case DetectedActivity.TILTING:
-                return "tilting";
-            default:
-                return "unknown";
-        }
+        return activityType.toString();
     }
 
 
     @Override
     public void onActivityUpdated(DetectedActivity detectedActivity) {
-        showActivity(detectedActivity);
+        long timeDiff = 0L;
+        mTimeNow = System.currentTimeMillis();
+
+        if (detectedActivity != null) {
+            if (mLastTime != 0L) {
+                timeDiff = (mTimeNow - mLastTime) / DateUtils.SECOND_IN_MILLIS;
+            }
+
+            mTextLog.append(sdf.format(mTimeNow))
+                    .append(" - ")
+                    .append(detectedActivity.toString().substring(23))
+                    .append(" - ")
+                    .append(timeDiff)
+                    .append("\n");
+            mTextView.setText(mTextLog.toString());
+            Log.d(LOG_TAG, detectedActivity.toString() + " seconds: " + timeDiff);
+
+            mLastTime = mTimeNow;
+        } else {
+            mTextView.setText("Null activity");
+            Log.d(LOG_TAG, "Null activity");
+        }
     }
 }

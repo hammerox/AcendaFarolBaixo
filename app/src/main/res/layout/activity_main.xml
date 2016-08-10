@@ -11,15 +11,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hammerox.android.acendaofarolbaixo.MainActivity">
 
-    <TextView
-        android:id="@+id/textview_activity"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:gravity="center"
-        style="@style/TextAppearance.AppCompat.Display2"
-        android:text="Nothing"/>
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/textview_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="Nothing"/>
+
+    </ScrollView>
 
     <LinearLayout
         android:orientation="horizontal"
