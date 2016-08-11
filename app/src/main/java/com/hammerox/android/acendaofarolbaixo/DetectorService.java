@@ -129,12 +129,17 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
         int activityType = detectedActivity.getType();
 
         if (detectedActivity.getConfidence() == 100) {
-            if (activityType == DetectedActivity.IN_VEHICLE) {
-                if (mNotifyUser) playNotification();
-            } else if (activityType == DetectedActivity.STILL || activityType == DetectedActivity.TILTING) {
-                // Do nothing
-            } else {
-                resetNotificationFlag();
+            switch (activityType) {
+                case DetectedActivity.IN_VEHICLE:
+                    if (mNotifyUser) playNotification();
+                    break;
+                case DetectedActivity.STILL:
+                case DetectedActivity.TILTING:
+                    // Do nothing
+                    break;
+                default:
+                    resetNotificationFlag();
+                    break;
             }
         }
     }
