@@ -13,7 +13,6 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -32,9 +31,6 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
     private long mTimeNow;
     private long mLastTime;
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    private long timeDiff;
-
-    private ToggleButton mToggleDetector;
 
     private static final int LOCATION_PERMISSION_ID = 1001;
     private static final String LOG_TAG = "onActivityUpdated";
@@ -44,14 +40,11 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Bind event clicks
-        mToggleDetector = (ToggleButton) findViewById(R.id.toggle_detector);
+        // Keep the screen always on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // bind textviews
         mTextView = (TextView) findViewById(R.id.textview_activity);
-
-        // Keep the screen always on
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Start string builder
         mTextLog = new StringBuilder();
@@ -60,32 +53,15 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
     }
 
 
-    private void startLocation() {
-        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
-        smartLocation.activity().start(this);
-    }
-
-
-    private void stopLocation() {
-        SmartLocation.with(this).activity().stop();
-        mTextView.setText("Activity Recognition stopped!");
-    }
-
-
     private void showLast() {
         DetectedActivity detectedActivity = SmartLocation.with(this).activity().getLastActivity();
         if (detectedActivity != null) {
             mTextView.setText(
                     String.format("[From Cache] Activity %s with %d%% confidence",
-                            getNameFromType(detectedActivity),
+                            detectedActivity.toString(),
                             detectedActivity.getConfidence())
             );
         }
-    }
-
-
-    private String getNameFromType(DetectedActivity activityType) {
-        return activityType.toString();
     }
 
 
@@ -114,10 +90,15 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
 
             if (detectedActivity.getConfidence() == 100) {
                 switch (activityType) {
-                    // IN_VEHICLE
+                    // IN_VEHICLE, play notification
                     case 0:
                         if (mNotifyUser) playNotification();
                         break;
+                    // STILL and TILTING, do nothing
+                    case 3:
+                    case 5:
+                        break;
+                    // Everything else, reset notification flag
                     default:
                         resetNotificationFlag();
                         break;
@@ -166,5 +147,17 @@ public class MainActivity extends AppCompatActivity implements OnActivityUpdated
             // Disable detector
             stopLocation();
         }
+    }
+
+
+    private void startLocation() {
+        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
+        smartLocation.activity().start(this);
+    }
+
+
+    private void stopLocation() {
+        SmartLocation.with(this).activity().stop();
+        mTextView.setText("Activity Recognition stopped!");
     }
 }
