@@ -26,7 +26,9 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
     private StringBuilder mTextLog;
     private long mTimeNow;
     private long mLastTime;
-    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
+    private SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm - HH:mm");
+    private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
 
     public static final String LOG_TAG = "onActivityUpdated";
 
@@ -41,12 +43,6 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
         smartLocation.activity().start(this);
         Log.d(LOG_TAG, "DetectorService RUNNING");
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        return super.onStartCommand(intent, flags, startId);
     }
 
 
@@ -73,6 +69,9 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
     public void onDestroy() {
         super.onDestroy();
         SmartLocation.with(this).activity().stop();
+
+        sendEmailLog();
+
         Log.d(LOG_TAG, "DetectorService STOPPED");
     }
 
@@ -83,6 +82,9 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
             mNotifyUser = false;
+
+            mTextLog.append("USER NOTIFIED")
+                    .append("\n");
             Log.d(LOG_TAG, "User notified");
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,6 +95,10 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
     public void resetNotificationFlag() {
         if (!mNotifyUser) {
             mNotifyUser = true;
+
+            mTextLog.append("FLAG RESET")
+                    .append("\n");
+
             Log.d(LOG_TAG, "User is now prone to receive notification");
         }
     }
@@ -106,7 +112,7 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
             timeDiff = (mTimeNow - mLastTime) / DateUtils.SECOND_IN_MILLIS;
         }
 
-        mTextLog.append(sdf.format(mTimeNow))
+        mTextLog.append(formatTime.format(mTimeNow))
                 .append(" - ")
                 .append(detectedActivity.toString().substring(23))
                 .append(" - ")
@@ -130,6 +136,29 @@ public class DetectorService extends Service implements OnActivityUpdatedListene
             } else {
                 resetNotificationFlag();
             }
+        }
+    }
+
+
+    public void sendEmailLog() {
+        try {
+            mTimeNow = System.currentTimeMillis();
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("message/rfc822");
+            emailIntent.putExtra(Intent.EXTRA_EMAIL  , debugEmailAddress);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "LOG " + formatDate.format(mTimeNow));
+            emailIntent.putExtra(Intent.EXTRA_TEXT   , mTextLog.toString());
+
+            Intent sendIntent = Intent.createChooser(emailIntent, "Send e-mail with...");
+            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            getApplicationContext().startActivity(sendIntent);
+
+            Log.d(LOG_TAG, "Finished sending email...");
+        }
+        catch (android.content.ActivityNotFoundException ex) {
+            ex.printStackTrace();
         }
     }
 
