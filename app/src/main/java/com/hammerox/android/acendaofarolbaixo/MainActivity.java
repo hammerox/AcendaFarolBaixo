@@ -41,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.textview_activity);
         mToggleButton = (ToggleButton) findViewById(R.id.toggle_detector);
 
+        showLast();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         // Find DetectorService running on background
         // If found, toggle button to ON. If not, toggle to OFF
         if (findService(mServiceName)) {
@@ -49,10 +56,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mToggleButton.setChecked(false);
         }
-
-        showLast();
     }
-
 
     private void showLast() {
         DetectedActivity detectedActivity = SmartLocation.with(this).activity().getLastActivity();
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             // Enable detector
             Intent intent = new Intent(this, DetectorService.class);
             startService(intent);
+            mTextView.setText("Activity Recognition started!");
         } else {
             // Disable detector
             Intent intent = new Intent(this, DetectorService.class);

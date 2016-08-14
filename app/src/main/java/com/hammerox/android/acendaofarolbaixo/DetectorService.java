@@ -1,6 +1,8 @@
 package com.hammerox.android.acendaofarolbaixo;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.Ringtone;
@@ -10,6 +12,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
+import android.support.v7.app.NotificationCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -26,7 +29,7 @@ import io.nlopez.smartlocation.SmartLocation;
  * Created by Mauricio on 10-Aug-16.
  */
 public class DetectorService extends Service
-        implements OnActivityUpdatedListener, TextToSpeech.OnInitListener {
+        implements OnActivityUpdatedListener {
 
     private TextToSpeech mTextToSpeech;
     private boolean mNotifyUser;
@@ -39,15 +42,18 @@ public class DetectorService extends Service
     private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
 
     public static final String LOG_TAG = "onActivityUpdated";
+    public static final int NOTIFICATION_ID = 1;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        // Run as foreground
+        runAsForeground();
+
         // Start string builder
         mTextLog = new StringBuilder();
         mNotifyUser = true;
-        mTextToSpeech = new TextToSpeech(this, this);
 
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
         smartLocation.activity().start(this);
@@ -75,22 +81,6 @@ public class DetectorService extends Service
 
 
     @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = mTextToSpeech.setLanguage(new Locale("pt", "br"));
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
 
@@ -106,6 +96,7 @@ public class DetectorService extends Service
         // Send log
         sendEmailLog();
 
+        stopForeground(true);
         Log.d(LOG_TAG, "DetectorService STOPPED");
     }
 
@@ -115,15 +106,56 @@ public class DetectorService extends Service
 //            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 //            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
 //            r.play();
-            speakSpeech(mSpeech);
+
+            mTextToSpeech = new TextToSpeech(this, speakSpeech());
             mNotifyUser = false;
 
-            mTextLog.append("USER NOTIFIED")
-                    .append("\n");
-            Log.d(LOG_TAG, "User notified");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public TextToSpeech.OnInitListener speakSpeech() {
+        return new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+
+                    int result = mTextToSpeech.setLanguage(new Locale("pt", "br"));
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "This Language is not supported");
+                    } else {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            ttsGreater21(mSpeech);
+                        } else {
+                            ttsUnder20(mSpeech);
+                        }
+
+                        // Wait for it to speak
+                        while (!mTextToSpeech.isSpeaking()) {}
+                        // Wait until he finishes speaking
+                        while (mTextToSpeech.isSpeaking()) {}
+
+                        mTextLog.append("USER NOTIFIED")
+                                .append("\n");
+                        Log.d(LOG_TAG, "User notified");
+                    }
+
+                } else {
+                    Log.e("TTS", "Initilization Failed!");
+                }
+
+                // Remove listener after its use
+                if(mTextToSpeech !=null){
+                    mTextToSpeech.stop();
+                    mTextToSpeech.shutdown();
+                }
+            }
+        };
     }
 
 
@@ -203,12 +235,19 @@ public class DetectorService extends Service
     }
 
 
-    public void speakSpeech(String text) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ttsGreater21(text);
-        } else {
-            ttsUnder20(text);
-        }
+    private void runAsForeground(){
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent= PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_beam)
+                .setContentTitle("Acenda o Farol Baixo")
+                .setContentText("Clique aqui para desligar ou configurar")
+                .setContentIntent(pendingIntent).build();
+
+        startForeground(NOTIFICATION_ID, notification);
+
     }
 
 
