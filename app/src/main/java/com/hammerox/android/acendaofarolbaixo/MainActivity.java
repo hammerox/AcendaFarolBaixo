@@ -84,11 +84,15 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DetectorService.class);
             startService(intent);
             mTextView.setText("Activity Recognition started!");
+            // Boot on start = TRUE
+            PrefManager.saveBoolean(this, PrefManager.START_ON_BOOT, true);
         } else {
             // Disable detector
             Intent intent = new Intent(this, DetectorService.class);
             stopService(intent);
             mTextView.setText("Activity Recognition stopped!");
+            // Boot on start = FALSE
+            PrefManager.saveBoolean(this, PrefManager.START_ON_BOOT, false);
         }
     }
 

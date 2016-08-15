@@ -243,7 +243,7 @@ public class DetectorService extends Service
         Notification notification = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_beam)
                 .setContentTitle("Acenda o Farol Baixo")
-                .setContentText("Clique aqui para desligar ou configurar")
+                .setContentText("Detector LIGADO. Clique para desligar")
                 .setContentIntent(pendingIntent).build();
 
         startForeground(NOTIFICATION_ID, notification);
