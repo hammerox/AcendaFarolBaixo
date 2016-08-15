@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Acenda o Farol Baixo</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pref_boot_key">START_ON_BOOT</string>
+    <string name="pref_boot_title">Start alarm on boot</string>
+    <string name="pref_boot_summary">Alarm will turn on automatically when you restart your device</string>
+    <string name="pref_file_name">preferences</string>
 </resources>

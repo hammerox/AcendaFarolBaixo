@@ -5,9 +5,9 @@
     android:layout_height="match_parent" >
 
     <CheckBoxPreference
-        android:key="START_ON_BOOT"
-        android:title="Start alarm on boot"
-        android:summary="Alarm will turn on automatically when you restart your device"
+        android:key="@string/pref_boot_key"
+        android:title="@string/pref_boot_title"
+        android:summary="@string/pref_boot_summary"
         android:defaultValue="true" />
 
 </PreferenceScreen>

@@ -100,14 +100,10 @@ public class DetectorFragment extends Fragment {
             // Enable detector
             Intent intent = new Intent(getActivity(), DetectorService.class);
             getActivity().startService(intent);
-            // Boot on start = TRUE
-            PrefManager.saveBoolean(getActivity(), PrefManager.START_ON_BOOT, true);
         } else {
             // Disable detector
             Intent intent = new Intent(getActivity(), DetectorService.class);
             getActivity().stopService(intent);
-            // Boot on start = FALSE
-            PrefManager.saveBoolean(getActivity(), PrefManager.START_ON_BOOT, false);
         }
     }
 

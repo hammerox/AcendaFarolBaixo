@@ -11,8 +11,11 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String fileName = context.getString(R.string.pref_file_name);
+        String bootKey = context.getString(R.string.pref_boot_key);
 
-        boolean startOnBoot = PrefManager.loadBoolean(context, PrefManager.START_ON_BOOT);
+        boolean startOnBoot = context.getSharedPreferences(fileName, Context.MODE_PRIVATE)
+                .getBoolean(bootKey, true);
 
         if (startOnBoot) {
             // Enable detector
