@@ -1,119 +1,23 @@
 package com.hammerox.android.acendaofarolbaixo;
 
-import android.Manifest;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.WindowManager;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
-import com.google.android.gms.location.DetectedActivity;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import io.nlopez.smartlocation.SmartLocation;
 
 
-public class MainActivity extends AppCompatActivity {
-
-    @BindView(R.id.textview_activity) TextView mTextView;
-    @BindView(R.id.toggle_detector) ToggleButton mToggleButton;
-
-    private String mServiceName = DetectorService.class.getName();
-    private ActivityManager mActivityManager;
-
-    private static final int LOCATION_PERMISSION_ID = 1001;
+public class MainActivity extends AppCompatActivity
+        implements DetectorFragment.OnFragmentInteractionListener,
+                    PrefFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
-        // Keep the screen always on
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        showLast();
     }
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        // Find DetectorService running on background
-        // If found, toggle button to ON. If not, toggle to OFF
-        if (findService(mServiceName)) {
-            Log.v(DetectorService.LOG_TAG, "Found Service running");
-            mToggleButton.setChecked(true);
-        } else {
-            mToggleButton.setChecked(false);
-        }
-    }
+    public void onFragmentInteraction(Uri uri) {
 
-
-    @OnClick(R.id.toggle_detector)
-    public void onToggleClicked(ToggleButton button) {
-        boolean on = button.isChecked();
-
-        if (on) {
-            // Location permission not granted
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
-                return;
-            }
-
-            // Enable detector
-            Intent intent = new Intent(this, DetectorService.class);
-            startService(intent);
-            mTextView.setText("Activity Recognition started!");
-            // Boot on start = TRUE
-            PrefManager.saveBoolean(this, PrefManager.START_ON_BOOT, true);
-        } else {
-            // Disable detector
-            Intent intent = new Intent(this, DetectorService.class);
-            stopService(intent);
-            mTextView.setText("Activity Recognition stopped!");
-            // Boot on start = FALSE
-            PrefManager.saveBoolean(this, PrefManager.START_ON_BOOT, false);
-        }
-    }
-
-
-    private boolean findService(String serviceName) {
-        if (mActivityManager == null) {
-            mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        }
-
-        // Search
-        for (ActivityManager.RunningServiceInfo service : mActivityManager.getRunningServices(Integer.MAX_VALUE)) {
-            // Check
-            if (serviceName.equals(service.service.getClassName())) {
-                // If found, return true
-                return true;
-            }
-        }
-
-        // If not found, return false
-        return false;
-    }
-
-
-    private void showLast() {
-        DetectedActivity detectedActivity = SmartLocation.with(this).activity().getLastActivity();
-        if (detectedActivity != null) {
-            mTextView.setText(
-                    String.format("[From Cache] Activity %s with %d%% confidence",
-                            detectedActivity.toString(),
-                            detectedActivity.getConfidence())
-            );
-        }
     }
 }

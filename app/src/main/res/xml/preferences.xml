@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <CheckBoxPreference
+        android:key="START_ON_BOOT"
+        android:title="Start alarm on boot"
+        android:summary="Alarm will turn on automatically when you restart your device"
+        android:defaultValue="true" />
+
+</PreferenceScreen>
