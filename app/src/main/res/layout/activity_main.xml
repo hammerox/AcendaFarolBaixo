@@ -30,6 +30,5 @@
         android:layout_height="60dp"
         android:layout_gravity="bottom|center_horizontal"
         android:textOn="ON"
-        android:textOff="OFF"
-        android:onClick="onToggleClicked" />
+        android:textOff="OFF" />
 </LinearLayout>

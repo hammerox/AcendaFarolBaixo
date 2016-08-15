@@ -10,20 +10,23 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.location.DetectedActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.nlopez.smartlocation.SmartLocation;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextView;
-    private ToggleButton mToggleButton;
+    @BindView(R.id.textview_activity) TextView mTextView;
+    @BindView(R.id.toggle_detector) ToggleButton mToggleButton;
+
     private String mServiceName = DetectorService.class.getName();
     private ActivityManager mActivityManager;
 
@@ -33,13 +36,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         // Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        // bind views
-        mTextView = (TextView) findViewById(R.id.textview_activity);
-        mToggleButton = (ToggleButton) findViewById(R.id.toggle_detector);
 
         showLast();
     }
@@ -58,20 +58,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showLast() {
-        DetectedActivity detectedActivity = SmartLocation.with(this).activity().getLastActivity();
-        if (detectedActivity != null) {
-            mTextView.setText(
-                    String.format("[From Cache] Activity %s with %d%% confidence",
-                            detectedActivity.toString(),
-                            detectedActivity.getConfidence())
-            );
-        }
-    }
 
-
-    public void onToggleClicked(View view) {
-        boolean on = ((ToggleButton) view).isChecked();
+    @OnClick(R.id.toggle_detector)
+    public void onToggleClicked(ToggleButton button) {
+        boolean on = button.isChecked();
 
         if (on) {
             // Location permission not granted
@@ -113,5 +103,17 @@ public class MainActivity extends AppCompatActivity {
 
         // If not found, return false
         return false;
+    }
+
+
+    private void showLast() {
+        DetectedActivity detectedActivity = SmartLocation.with(this).activity().getLastActivity();
+        if (detectedActivity != null) {
+            mTextView.setText(
+                    String.format("[From Cache] Activity %s with %d%% confidence",
+                            detectedActivity.toString(),
+                            detectedActivity.getConfidence())
+            );
+        }
     }
 }
