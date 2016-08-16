@@ -215,8 +215,9 @@ public class DetectorService extends Service
                     if (mNotifyUser) launchAlarm();
                     break;
                 case DetectedActivity.STILL:
-                    if (mNotifyUser) launchAlarm();
-                    break;
+//                    // ONLY FOR TESTING
+//                    if (mNotifyUser) launchAlarm();
+//                    break;
                 case DetectedActivity.TILTING:
                     // Do nothing
                     break;

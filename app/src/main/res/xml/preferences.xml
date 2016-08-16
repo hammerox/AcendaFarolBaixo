@@ -2,12 +2,22 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <CheckBoxPreference
         android:key="@string/pref_boot_key"
         android:title="@string/pref_boot_title"
         android:summary="@string/pref_boot_summary"
         android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:title="Teste"
+        android:summary="Essa opção ainda não faz nada"
+        android:defaultValue="true" />
+    <CheckBoxPreference
+        android:title="Teste"
+        android:summary="Essa opção ainda não faz nada"
+        android:defaultValue="true" />
+
 
 </PreferenceScreen>
