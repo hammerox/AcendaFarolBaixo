@@ -5,4 +5,8 @@
     <string name="pref_boot_title">Start alarm on boot</string>
     <string name="pref_boot_summary">Alarm will turn on automatically when you restart your device</string>
     <string name="pref_file_name">preferences</string>
+
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">ACENDA O\nFAROL BAIXO</string>
 </resources>
