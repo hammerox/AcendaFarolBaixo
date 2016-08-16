@@ -8,16 +8,53 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <TextView
+    <LinearLayout
         android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="@color/accent"
-        android:textSize="50sp"
-        android:textStyle="bold"/>
+        android:orientation="vertical"
+        android:layout_width="304dp"
+        android:layout_height="480dp"
+        android:layout_gravity="center"
+        android:keepScreenOn="true" >
+        
+        <ImageView
+            android:src="@drawable/ic_beam_filled"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:layout_gravity="center" />
+
+        <Button
+            android:text="Okay!"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:theme="@style/Custom.ButtonAccent"
+            android:textColor="@color/text_primary"
+            android:textSize="24dp"
+            android:layout_gravity="center" />
+
+        <Button
+            android:text="Não me alertar em..."
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:theme="@style/Custom.ButtonPrimaryDark"
+            android:layout_gravity="center" />
+
+        <Button
+            android:text="Configurar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:theme="@style/Custom.ButtonPrimaryDark"
+            android:layout_gravity="center" />
+
+
+    
+    </LinearLayout>
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
