@@ -7,6 +7,12 @@
     <string name="pref_file_name">preferences</string>
 
     <string name="title_activity_alarm">AlarmActivity</string>
+
+    <string name="alarm_okay_text">Okay!</string>
+    <string name="alarm_sleep_text">Não me alertar em...</string>
+    <string name="alarm_config_text">Configurar</string>
+
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">ACENDA O\nFAROL BAIXO</string>
+
 </resources>

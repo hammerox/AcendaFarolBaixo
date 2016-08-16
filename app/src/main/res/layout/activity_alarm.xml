@@ -24,7 +24,8 @@
             android:layout_gravity="center" />
 
         <Button
-            android:text="Okay!"
+            android:id="@+id/alarm_okay"
+            android:text="@string/alarm_okay_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
@@ -35,7 +36,8 @@
             android:layout_gravity="center" />
 
         <Button
-            android:text="Não me alertar em..."
+            android:id="@+id/alarm_sleep"
+            android:text="@string/alarm_sleep_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -44,7 +46,8 @@
             android:layout_gravity="center" />
 
         <Button
-            android:text="Configurar"
+            android:id="@+id/alarm_config"
+            android:text="@string/alarm_config_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

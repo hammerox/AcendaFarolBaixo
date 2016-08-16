@@ -8,6 +8,11 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Toast;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -93,6 +98,7 @@ public class AlarmActivity extends AppCompatActivity {
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         setContentView(R.layout.activity_alarm);
+        ButterKnife.bind(this);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
@@ -122,6 +128,25 @@ public class AlarmActivity extends AppCompatActivity {
         // are available.
         delayedHide(100);
     }
+
+
+    @OnClick(R.id.alarm_okay)
+    public void onOkayClick(Button button) {
+        finish();
+    }
+
+
+    @OnClick(R.id.alarm_sleep)
+    public void onSleepClick(Button button) {
+        Toast.makeText(this, "Sorry, ainda em construção...", Toast.LENGTH_LONG).show();
+    }
+
+
+    @OnClick(R.id.alarm_config)
+    public void onConfigClick(Button button) {
+        Toast.makeText(this, "Sorry, ainda em construção...", Toast.LENGTH_LONG).show();
+    }
+
 
     private void toggle() {
         if (mVisible) {
