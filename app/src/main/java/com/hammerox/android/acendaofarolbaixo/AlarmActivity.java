@@ -9,8 +9,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -19,6 +24,24 @@ import butterknife.OnClick;
  * status bar and navigation/system bar) with user interaction.
  */
 public class AlarmActivity extends AppCompatActivity {
+
+    @BindView(R.id.alarm_icon) ImageView alarmIcon;
+
+    private int mInterval = 1000; // 1 seconds by default, can be changed later
+    private Handler mHandler;
+    private Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                YoYo.with(Techniques.Flash).playOn(findViewById(R.id.alarm_icon));
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -113,6 +136,9 @@ public class AlarmActivity extends AppCompatActivity {
             }
         });
 
+        mHandler = new Handler();
+        startAnimation();
+
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
@@ -129,6 +155,12 @@ public class AlarmActivity extends AppCompatActivity {
         delayedHide(100);
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopAnimation();
+    }
 
     @OnClick(R.id.alarm_okay)
     public void onOkayClick(Button button) {
@@ -189,5 +221,14 @@ public class AlarmActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+
+    void startAnimation() {
+        mStatusChecker.run();
+    }
+
+    void stopAnimation() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 }
