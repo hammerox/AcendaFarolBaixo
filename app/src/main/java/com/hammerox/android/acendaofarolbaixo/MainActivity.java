@@ -1,9 +1,12 @@
 package com.hammerox.android.acendaofarolbaixo;
 
 import android.net.Uri;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -14,6 +17,7 @@ public class MainActivity extends AppCompatActivity
                     PrefFragment.OnFragmentInteractionListener {
 
     @BindView(R.id.activity_main_toolbar) Toolbar toolbar;
+    @BindView(R.id.activity_main_layout_container) SlidingUpPanelLayout layoutContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,5 +34,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (layoutContainer.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            layoutContainer.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
