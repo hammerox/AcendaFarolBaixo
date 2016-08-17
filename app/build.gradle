@@ -29,6 +29,8 @@ dependencies {
     compile 'com.android.support:design:24.1.1'
     compile 'io.nlopez.smartlocation:library:3.2.4'
     compile 'com.sothree.slidinguppanel:library:3.3.0'
+    compile 'com.github.medyo:fancybuttons:1.8.1'
+    compile 'com.skyfishjy.ripplebackground:library:1.0.1'
 
     // ButterKnife
     apt 'com.jakewharton:butterknife-compiler:8.2.1'

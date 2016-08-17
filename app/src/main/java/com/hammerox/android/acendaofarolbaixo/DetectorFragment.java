@@ -17,14 +17,18 @@ import android.view.ViewGroup;
 import android.widget.ToggleButton;
 
 
+import com.skyfishjy.library.RippleBackground;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 
 public class DetectorFragment extends Fragment {
 
-    @BindView(R.id.toggle_detector) ToggleButton mToggleButton;
+    @BindView(R.id.detector_button) FancyButton mDetectorButton;
+    @BindView(R.id.detector_ripple) RippleBackground mDetectorRipple;
 
     private String mServiceName = DetectorService.class.getName();
     private ActivityManager mActivityManager;
@@ -56,6 +60,7 @@ public class DetectorFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detector, container, false);
         ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -67,9 +72,9 @@ public class DetectorFragment extends Fragment {
         // If found, toggle button to ON. If not, toggle to OFF
         if (findService(mServiceName)) {
             Log.v(DetectorService.LOG_TAG, "Found Service running");
-            mToggleButton.setChecked(true);
+            mDetectorRipple.startRippleAnimation();
         } else {
-            mToggleButton.setChecked(false);
+            mDetectorRipple.stopRippleAnimation();
         }
     }
 
@@ -86,11 +91,10 @@ public class DetectorFragment extends Fragment {
     }
 
 
-    @OnClick(R.id.toggle_detector)
-    public void onToggleClicked(ToggleButton button) {
-        boolean on = button.isChecked();
-
-        if (on) {
+    @OnClick(R.id.detector_button)
+    public void onToggleClicked(FancyButton button) {
+        boolean switchOn = !findService(mServiceName);
+        if (switchOn) {
             // Location permission not granted
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
@@ -100,10 +104,12 @@ public class DetectorFragment extends Fragment {
             // Enable detector
             Intent intent = new Intent(getActivity(), DetectorService.class);
             getActivity().startService(intent);
+            mDetectorRipple.startRippleAnimation();
         } else {
             // Disable detector
             Intent intent = new Intent(getActivity(), DetectorService.class);
             getActivity().stopService(intent);
+            mDetectorRipple.stopRippleAnimation();
         }
     }
 
