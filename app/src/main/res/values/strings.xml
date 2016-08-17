@@ -12,7 +12,14 @@
     <string name="alarm_sleep_text">Não me alertar em...</string>
     <string name="alarm_config_text">Configurar</string>
 
+    <string name="detector_instructions">Como funciona?</string>
+    <string name="detector_instructions_1">Ative o dispositivo</string>
+    <string name="detector_instructions_2">App te notificará sempre que\nvocê estiver em um carro</string>
+    <string name="detector_instructions_3">Acenda o farol baixo e não tome multas =)</string>
+
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">ACENDA O\nFAROL BAIXO</string>
+
+    <!--Organizar strings abaixo-->
 
 </resources>

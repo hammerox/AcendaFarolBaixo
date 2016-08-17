@@ -42,7 +42,7 @@
         </com.skyfishjy.library.RippleBackground>
 
         <TextView
-            android:text="Como funciona?"
+            android:text="@string/detector_instructions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -59,7 +59,7 @@
             style="@style/TextAppearance.AppCompat.Display1" />
 
         <TextView
-            android:text="Ative o dispositivo"
+            android:text="@string/detector_instructions_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
@@ -72,7 +72,7 @@
             style="@style/TextAppearance.AppCompat.Display1" />
 
         <TextView
-            android:text="App te notificará sempre que\nvocê estiver em um carro"
+            android:text="@string/detector_instructions_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
@@ -85,7 +85,7 @@
             style="@style/TextAppearance.AppCompat.Display1" />
 
         <TextView
-            android:text="Acenda o farol baixo e não tome multas =)"
+            android:text="@string/detector_instructions_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
