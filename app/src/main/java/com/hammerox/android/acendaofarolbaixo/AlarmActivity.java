@@ -2,9 +2,11 @@ package com.hammerox.android.acendaofarolbaixo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,12 +29,17 @@ public class AlarmActivity extends AppCompatActivity{
 
     @BindView(R.id.alarm_icon) ImageView alarmIcon;
     @BindString(R.string.pref_file_name) String fileName;
+    @BindString(R.string.pref_alarm_vibrate_key) String alarmVibrateKey;
     @BindString(R.string.pref_alarm_type_key) String alarmTypeKey;
+    @BindString(R.string.pref_alarm_sound_key) String alarmSoundKey;
 
-    private int alarmTypeValue;
-    private boolean isToAlarm = false;
-    private boolean isToSpeech = false;
-    private Uri mAlarmSound;
+    private SharedPreferences preferences;
+    private boolean isToVibrate;
+    private boolean isToAlarm;
+    private boolean isToSpeech;
+    
+    private long[] vibratePattern = {0, 1000, 1000};
+    private Vibrator vibrator;
     private Ringtone mRingtone;
     private int mAnimationInterval = 1000; // 1 seconds by default, can be changed later
     private Handler mAnimationHandler;
@@ -49,6 +56,8 @@ public class AlarmActivity extends AppCompatActivity{
         }
     };
 
+    private static final String DEFAULT_SOUND = "default_string";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +70,19 @@ public class AlarmActivity extends AppCompatActivity{
         setContentView(R.layout.activity_alarm);
         ButterKnife.bind(this);
 
-        alarmTypeValue = Integer.valueOf(getSharedPreferences(fileName, Context.MODE_PRIVATE)
-                .getString(alarmTypeKey, "1"));
+        // Get preferences
+        preferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
 
+        // Get vibration
+        isToVibrate = preferences.getBoolean(alarmVibrateKey, true);
+        if (isToVibrate) {
+            // Get instance of Vibrator from current Context
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(vibratePattern, 0);
+        }
+
+        // Get alarm type
+        int alarmTypeValue = Integer.valueOf(preferences.getString(alarmTypeKey, "1"));
         switch (alarmTypeValue) {
             case 1:
                 isToAlarm = true;
@@ -76,14 +95,8 @@ public class AlarmActivity extends AppCompatActivity{
                 break;
         }
 
-        mAnimationHandler = new Handler();
+        // Set animation
         startAnimation();
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
 
@@ -112,9 +125,34 @@ public class AlarmActivity extends AppCompatActivity{
     }
 
 
+    private void stopEverything() {
+        // Stop sounds
+        if (isToAlarm) {
+            stopAlarmSound();
+        } else if (isToSpeech) {
+            Intent intent = new Intent(this, SpeechService.class);
+            stopService(intent);
+        }
+
+        // Stop vibration
+        if (isToVibrate) {
+            vibrator.cancel();
+        }
+
+        // Stop animation
+        stopAnimation();
+    }
+
+
     public void playAlarmSound() {
-        mAlarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mAlarmSound);
+        String preferenceString = preferences.getString(alarmSoundKey, DEFAULT_SOUND);
+
+        Uri mSoundURI = (preferenceString.equals(DEFAULT_SOUND))
+                ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                : Uri.parse(preferenceString);
+
+        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundURI);
+
         try {
             mRingtone.play();
             Log.d(DetectorService.LOG_TAG, "User notified");
@@ -135,27 +173,13 @@ public class AlarmActivity extends AppCompatActivity{
 
 
     void startAnimation() {
+        mAnimationHandler = new Handler();
         mAnimationRunnable.run();
     }
 
 
     void stopAnimation() {
         mAnimationHandler.removeCallbacks(mAnimationRunnable);
-    }
-
-
-    private void stopEverything() {
-        stopAnimation();
-
-        switch (alarmTypeValue) {
-            case 1:
-                stopAlarmSound();
-                break;
-            case 2:
-                Intent intent = new Intent(this, SpeechService.class);
-                stopService(intent);
-                break;
-        }
     }
 
 }

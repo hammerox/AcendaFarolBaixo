@@ -14,7 +14,7 @@
         </PreferenceScreen>
 
         <CheckBoxPreference
-            android:key="ALARM_VIBRATE"
+            android:key="@string/pref_alarm_vibrate_key"
             android:title="Vibrate"
             android:summary="When triggered, device will vibrate"
             android:defaultValue="true" />
@@ -35,7 +35,7 @@
             android:defaultValue="@string/pref_speech_default"/>
 
         <RingtonePreference
-            android:key="ALARM_SOUND"
+            android:key="@string/pref_alarm_sound_key"
             android:title="Alarm Sound"
             android:ringtoneType="alarm"
             android:summary="Change the alarm sound"

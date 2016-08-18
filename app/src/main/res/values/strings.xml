@@ -32,6 +32,8 @@
     <string name="detector_toast_on">Dispositivo ATIVADO</string>
     <string name="detector_toast_off">Dispositivo DESATIVADO</string>
     <string name="pref_alarm_type_key">ALARM_TYPE</string>
+    <string name="pref_alarm_sound_key">ALARM_SOUND</string>
+    <string name="pref_alarm_vibrate_key">ALARM_VIBRATE</string>
 
 
 </resources>
