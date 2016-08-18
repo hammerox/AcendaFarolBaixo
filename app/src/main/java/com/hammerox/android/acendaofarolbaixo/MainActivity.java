@@ -1,7 +1,6 @@
 package com.hammerox.android.acendaofarolbaixo;
 
 import android.net.Uri;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
