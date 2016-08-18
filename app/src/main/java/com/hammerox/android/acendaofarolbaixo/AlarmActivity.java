@@ -1,14 +1,10 @@
 package com.hammerox.android.acendaofarolbaixo;
 
-import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Looper;
-import android.os.Message;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,9 +17,6 @@ import android.widget.Toast;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
-import java.util.HashMap;
-import java.util.Locale;
-
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,11 +26,14 @@ import butterknife.OnClick;
 public class AlarmActivity extends AppCompatActivity{
 
     @BindView(R.id.alarm_icon) ImageView alarmIcon;
+    @BindString(R.string.pref_file_name) String fileName;
+    @BindString(R.string.pref_alarm_type_key) String alarmTypeKey;
 
+    private int alarmTypeValue;
+    private boolean isToAlarm = false;
+    private boolean isToSpeech = false;
     private Uri mAlarmSound;
     private Ringtone mRingtone;
-
-
     private int mAnimationInterval = 1000; // 1 seconds by default, can be changed later
     private Handler mAnimationHandler;
     private Runnable mAnimationRunnable = new Runnable() {
@@ -65,34 +61,42 @@ public class AlarmActivity extends AppCompatActivity{
         setContentView(R.layout.activity_alarm);
         ButterKnife.bind(this);
 
-        mAlarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mAlarmSound);
+        alarmTypeValue = Integer.valueOf(getSharedPreferences(fileName, Context.MODE_PRIVATE)
+                .getString(alarmTypeKey, "1"));
+
+        switch (alarmTypeValue) {
+            case 1:
+                isToAlarm = true;
+                playAlarmSound();
+                break;
+            case 2:
+                isToSpeech = true;
+                Intent intent = new Intent(this, SpeechService.class);
+                startService(intent);
+                break;
+        }
 
         mAnimationHandler = new Handler();
         startAnimation();
-
-        Intent intent = new Intent(this, SpeechService.class);
-        startService(intent);
-//        playAlarmSound();
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopAnimation();
+    }
 
-        // Stop alarm sound
-        stopAlarmSound();
 
-        Intent intent = new Intent(this, SpeechService.class);
-        stopService(intent);
+    @Override
+    public void onBackPressed() {
+        // Do nothing
     }
 
 
     @OnClick(R.id.alarm_okay)
     public void onOkayClick(Button button) {
         finish();
+        stopEverything();
     }
 
 
@@ -109,6 +113,8 @@ public class AlarmActivity extends AppCompatActivity{
 
 
     public void playAlarmSound() {
+        mAlarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mAlarmSound);
         try {
             mRingtone.play();
             Log.d(DetectorService.LOG_TAG, "User notified");
@@ -135,6 +141,21 @@ public class AlarmActivity extends AppCompatActivity{
 
     void stopAnimation() {
         mAnimationHandler.removeCallbacks(mAnimationRunnable);
+    }
+
+
+    private void stopEverything() {
+        stopAnimation();
+
+        switch (alarmTypeValue) {
+            case 1:
+                stopAlarmSound();
+                break;
+            case 2:
+                Intent intent = new Intent(this, SpeechService.class);
+                stopService(intent);
+                break;
+        }
     }
 
 }

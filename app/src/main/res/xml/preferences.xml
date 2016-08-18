@@ -20,7 +20,7 @@
             android:defaultValue="true" />
 
         <ListPreference
-            android:key="ALARM_TYPE"
+            android:key="@string/pref_alarm_type_key"
             android:title="Alarm Type"
             android:summary="Choose between voice or alarm sound"
             android:entries="@array/alarm_type"
