@@ -4,20 +4,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <CheckBoxPreference
-        android:key="@string/pref_boot_key"
-        android:title="@string/pref_boot_title"
-        android:summary="@string/pref_boot_summary"
-        android:defaultValue="true" />
+    <PreferenceCategory
+        android:title="Alarm settings">
 
-    <CheckBoxPreference
-        android:title="Teste"
-        android:summary="Essa opção ainda não faz nada"
-        android:defaultValue="true" />
-    <CheckBoxPreference
-        android:title="Teste"
-        android:summary="Essa opção ainda não faz nada"
-        android:defaultValue="true" />
+        <PreferenceScreen
+            android:title="Test Alarm"
+            android:summary="Click here to trigger the alarm" >
+            <intent android:action="com.hammerox.android.ALARM_SCREEN" />
+        </PreferenceScreen>
+
+        <CheckBoxPreference
+            android:key="ALARM_VIBRATE"
+            android:title="Vibrate"
+            android:summary="When triggered, device will vibrate"
+            android:defaultValue="true" />
+
+        <ListPreference
+            android:key="ALARM_TYPE"
+            android:title="Alarm Type"
+            android:summary="Choose between voice or alarm sound"
+            android:entries="@array/alarm_type"
+            android:entryValues="@array/alarm_type_values"
+            android:defaultValue="2" />
+
+        <EditTextPreference
+            android:key="ALARM_SPEECH"
+            android:title="Voice Speech"
+            android:summary="Change what the system speaks"
+            android:dialogTitle="EditText Dialog"
+            android:defaultValue="@string/pref_speech_default"/>
+
+        <RingtonePreference
+            android:key="ALARM_SOUND"
+            android:title="Alarm Sound"
+            android:ringtoneType="alarm"
+            android:summary="Change the alarm sound"
+            android:showDefault="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Others">
+
+        <CheckBoxPreference
+            android:key="@string/pref_boot_key"
+            android:title="@string/pref_boot_title"
+            android:summary="@string/pref_boot_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
 
 
 </PreferenceScreen>

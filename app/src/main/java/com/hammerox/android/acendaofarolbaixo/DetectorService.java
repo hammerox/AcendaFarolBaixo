@@ -39,7 +39,7 @@ public class DetectorService extends Service
     private StringBuilder mTextLog;
     private long mTimeNow;
     private long mLastTime;
-    private String mSpeech = "Atenção: Acenda o farol baixo";
+    private String mSpeech;
     private SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
     private SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm - HH:mm");
     private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
@@ -54,8 +54,9 @@ public class DetectorService extends Service
         // Run as foreground
         runAsForeground();
 
-        // Start string builder
+        // Start variables
         mTextLog = new StringBuilder();
+        mSpeech = getString(R.string.pref_speech_default);
         mNotifyUser = true;
 
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();

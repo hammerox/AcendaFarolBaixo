@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ToggleButton;
+import android.widget.Toast;
 
 
 import com.skyfishjy.library.RippleBackground;
@@ -104,12 +104,16 @@ public class DetectorFragment extends Fragment {
             // Enable detector
             Intent intent = new Intent(getActivity(), DetectorService.class);
             getActivity().startService(intent);
+            // Tell user
             mDetectorRipple.startRippleAnimation();
+            Toast.makeText(getActivity(), R.string.detector_toast_on, Toast.LENGTH_LONG).show();
         } else {
             // Disable detector
             Intent intent = new Intent(getActivity(), DetectorService.class);
             getActivity().stopService(intent);
+            // Tell user
             mDetectorRipple.stopRippleAnimation();
+            Toast.makeText(getActivity(), R.string.detector_toast_off, Toast.LENGTH_LONG).show();
         }
     }
 

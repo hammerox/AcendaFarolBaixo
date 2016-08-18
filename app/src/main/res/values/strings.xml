@@ -1,25 +1,36 @@
 <resources>
     <string name="app_name">Acenda o Farol Baixo</string>
 
+    <!--PREFERENCES-->
+
+    <string name="pref_file_name">preferences</string>
+
     <string name="pref_boot_key">START_ON_BOOT</string>
     <string name="pref_boot_title">Start alarm on boot</string>
     <string name="pref_boot_summary">Alarm will turn on automatically when you restart your device</string>
-    <string name="pref_file_name">preferences</string>
+
+    <string name="pref_speech_default">Atenção: Acenda o farol baixo</string>
+
+    <!--ACTIVITIES AND VIEWS-->
 
     <string name="title_activity_alarm">AlarmActivity</string>
+
+    <string name="detector_instructions">Como funciona?</string>
+    <string name="detector_instructions_1">Ative o dispositivo no botão acima</string>
+    <string name="detector_instructions_2">O aplicativo te notificará sempre que\nvocê estiver em um carro</string>
+    <string name="detector_instructions_3">Acenda o farol baixo e não tome multas =)</string>
 
     <string name="alarm_okay_text">Okay!</string>
     <string name="alarm_sleep_text">Não me alertar em...</string>
     <string name="alarm_config_text">Configurar</string>
 
-    <string name="detector_instructions">Como funciona?</string>
-    <string name="detector_instructions_1">Ative o dispositivo</string>
-    <string name="detector_instructions_2">App te notificará sempre que\nvocê estiver em um carro</string>
-    <string name="detector_instructions_3">Acenda o farol baixo e não tome multas =)</string>
+
+    <!--OTHERS-->
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">ACENDA O\nFAROL BAIXO</string>
+    <string name="detector_toast_on">Dispositivo ATIVADO</string>
+    <string name="detector_toast_off">Dispositivo DESATIVADO</string>
 
-    <!--Organizar strings abaixo-->
 
 </resources>
