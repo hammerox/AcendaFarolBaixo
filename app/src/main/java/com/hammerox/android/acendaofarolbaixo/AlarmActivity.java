@@ -1,8 +1,18 @@
 package com.hammerox.android.acendaofarolbaixo;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Looper;
+import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,18 +21,26 @@ import android.widget.Toast;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
+import java.util.HashMap;
+import java.util.Locale;
+
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class AlarmActivity extends AppCompatActivity {
+public class AlarmActivity extends AppCompatActivity{
 
     @BindView(R.id.alarm_icon) ImageView alarmIcon;
 
-    private int mInterval = 1000; // 1 seconds by default, can be changed later
-    private Handler mHandler;
-    private Runnable mStatusChecker = new Runnable() {
+    private Uri mAlarmSound;
+    private Ringtone mRingtone;
+
+
+    private int mAnimationInterval = 1000; // 1 seconds by default, can be changed later
+    private Handler mAnimationHandler;
+    private Runnable mAnimationRunnable = new Runnable() {
         @Override
         public void run() {
             try {
@@ -30,7 +48,7 @@ public class AlarmActivity extends AppCompatActivity {
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
-                mHandler.postDelayed(mStatusChecker, mInterval);
+                mAnimationHandler.postDelayed(mAnimationRunnable, mAnimationInterval);
             }
         }
     };
@@ -47,8 +65,15 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm);
         ButterKnife.bind(this);
 
-        mHandler = new Handler();
+        mAlarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mAlarmSound);
+
+        mAnimationHandler = new Handler();
         startAnimation();
+
+        Intent intent = new Intent(this, SpeechService.class);
+        startService(intent);
+//        playAlarmSound();
     }
 
 
@@ -56,7 +81,14 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopAnimation();
+
+        // Stop alarm sound
+        stopAlarmSound();
+
+        Intent intent = new Intent(this, SpeechService.class);
+        stopService(intent);
     }
+
 
     @OnClick(R.id.alarm_okay)
     public void onOkayClick(Button button) {
@@ -76,12 +108,33 @@ public class AlarmActivity extends AppCompatActivity {
     }
 
 
+    public void playAlarmSound() {
+        try {
+            mRingtone.play();
+            Log.d(DetectorService.LOG_TAG, "User notified");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void stopAlarmSound() {
+        try {
+            mRingtone.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     void startAnimation() {
-        mStatusChecker.run();
+        mAnimationRunnable.run();
     }
 
 
     void stopAnimation() {
-        mHandler.removeCallbacks(mStatusChecker);
+        mAnimationHandler.removeCallbacks(mAnimationRunnable);
     }
+
 }

@@ -39,6 +39,12 @@
 
         <service android:name=".DetectorService"/>
 
+        <service
+            android:name=".SpeechService"
+            android:enabled="true"
+            android:exported="false"
+            android:process="com.hammerox.android.acendaofarolbaixo.SpeechService" />
+
         <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

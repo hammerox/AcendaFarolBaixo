@@ -1,13 +1,10 @@
 package com.hammerox.android.acendaofarolbaixo;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
-import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.text.format.DateUtils;
@@ -16,8 +13,6 @@ import android.util.Log;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Locale;
 
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
@@ -28,12 +23,10 @@ import io.nlopez.smartlocation.SmartLocation;
 public class DetectorService extends Service
         implements OnActivityUpdatedListener {
 
-    private TextToSpeech mTextToSpeech;
     private boolean mNotifyUser;
     private StringBuilder mTextLog;
     private long mTimeNow;
     private long mLastTime;
-    private String mSpeech;
     private SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
     private SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm - HH:mm");
     private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
@@ -50,7 +43,6 @@ public class DetectorService extends Service
 
         // Start variables
         mTextLog = new StringBuilder();
-        mSpeech = getString(R.string.pref_speech_default);
         mNotifyUser = true;
 
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
@@ -85,12 +77,6 @@ public class DetectorService extends Service
         // Stop detector
         SmartLocation.with(this).activity().stop();
 
-        // Remove TextToSpeech
-        if(mTextToSpeech !=null){
-            mTextToSpeech.stop();
-            mTextToSpeech.shutdown();
-        }
-
         // Send log
         sendEmailLog();
 
@@ -100,71 +86,15 @@ public class DetectorService extends Service
 
 
     public void launchAlarm() {
-        // Play notification
-        playNotification();
-
         // Launch alarm screen
         Intent alarmIntent = new Intent(this, AlarmActivity.class);
         alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(alarmIntent);
-    }
 
+        mNotifyUser = false;
 
-    public void playNotification() {
-        try {
-//            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-//            r.play();
-
-            mTextToSpeech = new TextToSpeech(this, speakSpeech());
-            mNotifyUser = false;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public TextToSpeech.OnInitListener speakSpeech() {
-        return new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-
-                    int result = mTextToSpeech.setLanguage(new Locale("pt", "br"));
-
-                    if (result == TextToSpeech.LANG_MISSING_DATA
-                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Log.e("TTS", "This Language is not supported");
-                    } else {
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            ttsGreater21(mSpeech);
-                        } else {
-                            ttsUnder20(mSpeech);
-                        }
-
-                        // Wait for it to speak
-                        while (!mTextToSpeech.isSpeaking()) {}
-                        // Wait until he finishes speaking
-                        while (mTextToSpeech.isSpeaking()) {}
-
-                        mTextLog.append("USER NOTIFIED")
-                                .append("\n");
-                        Log.d(LOG_TAG, "User notified");
-                    }
-
-                } else {
-                    Log.e("TTS", "Initilization Failed!");
-                }
-
-                // Remove listener after its use
-                if(mTextToSpeech !=null){
-                    mTextToSpeech.stop();
-                    mTextToSpeech.shutdown();
-                }
-            }
-        };
+        mTextLog.append("USER NOTIFIED")
+                .append("\n");
     }
 
 
@@ -262,19 +192,5 @@ public class DetectorService extends Service
 
     }
 
-
-    @SuppressWarnings("deprecation")
-    private void ttsUnder20(String text) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
-        mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, map);
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void ttsGreater21(String text) {
-        String utteranceId=this.hashCode() + "";
-        mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
-    }
 
 }
