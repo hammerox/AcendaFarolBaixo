@@ -113,12 +113,6 @@ public class AlarmActivity extends AppCompatActivity{
     }
 
 
-    @OnClick(R.id.alarm_sleep)
-    public void onSleepClick(Button button) {
-        Toast.makeText(this, "Sorry, ainda em construção...", Toast.LENGTH_LONG).show();
-    }
-
-
     @OnClick(R.id.alarm_config)
     public void onConfigClick(Button button) {
         Toast.makeText(this, "Sorry, ainda em construção...", Toast.LENGTH_LONG).show();
