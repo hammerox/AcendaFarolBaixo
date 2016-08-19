@@ -37,11 +37,11 @@ public class AlarmActivity extends AppCompatActivity{
     private boolean isToVibrate;
     private boolean isToAlarm;
     private boolean isToSpeech;
-    
-    private long[] vibratePattern = {0, 1000, 1000};
+
+    private long[] vibratePattern = {0, 500, 1000};
     private Vibrator vibrator;
     private Ringtone mRingtone;
-    private int mAnimationInterval = 1000; // 1 seconds by default, can be changed later
+    private int mAnimationInterval = 1000; // 1 seconds by default
     private Handler mAnimationHandler;
     private Runnable mAnimationRunnable = new Runnable() {
         @Override

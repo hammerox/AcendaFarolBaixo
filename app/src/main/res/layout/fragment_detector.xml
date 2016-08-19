@@ -59,7 +59,7 @@
             style="@style/TextAppearance.AppCompat.Display1" />
 
         <TextView
-            android:text="@string/detector_instructions_1"
+            android:text="@string/detector_instructions_1_off"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />

@@ -27,19 +27,19 @@
             android:entryValues="@array/alarm_type_values"
             android:defaultValue="2" />
 
-        <EditTextPreference
-            android:key="ALARM_SPEECH"
-            android:title="Voice Speech"
-            android:summary="Change what the system speaks"
-            android:dialogTitle="EditText Dialog"
-            android:defaultValue="@string/pref_speech_default"/>
-
         <RingtonePreference
             android:key="@string/pref_alarm_sound_key"
             android:title="Alarm Sound"
             android:ringtoneType="alarm"
             android:summary="Change the alarm sound"
             android:showDefault="true" />
+
+        <EditTextPreference
+            android:key="@string/pref_alarm_speech_key"
+            android:title="Voice Speech"
+            android:summary="Change what the system speaks"
+            android:dialogTitle="EditText Dialog"
+            android:defaultValue="@string/pref_speech_default"/>
     </PreferenceCategory>
 
     <PreferenceCategory

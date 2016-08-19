@@ -2,6 +2,7 @@ package com.hammerox.android.acendaofarolbaixo;
 
 import android.annotation.TargetApi;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
@@ -23,7 +24,7 @@ public class SpeechService extends Service
 
     private TextToSpeech mTextToSpeech;
     private String mSpeech;
-    private int mSpeechInterval = 3000; // 2 seconds by default, can be changed later
+    private int mSpeechInterval = 15000; // 15 seconds by default, can be changed later
     private Handler mSpeechHandler;
     private Runnable mSpeechRunnable;
 
@@ -31,6 +32,13 @@ public class SpeechService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
+        String speechKey = getString(R.string.pref_alarm_speech_key);
+        String speechDefault = getString(R.string.pref_speech_default);
+
+        mSpeech = getSharedPreferences(FileManager.FILE_NAME, Context.MODE_PRIVATE)
+                .getString(speechKey, speechDefault);
+        Log.d("SpeechService", "onCreate: " + mSpeech);
+        mTextToSpeech = new TextToSpeech(this, this);
     }
 
     @Nullable
@@ -41,10 +49,6 @@ public class SpeechService extends Service
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        mSpeech = getString(R.string.pref_speech_default);
-        mTextToSpeech = new TextToSpeech(this, this);
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -73,11 +77,13 @@ public class SpeechService extends Service
                 Log.e("TTS", "This Language is not supported");
             } else {
                 mSpeechHandler = new Handler();
+                Log.d("SpeechService", "New handler");
                 mSpeechRunnable = new Runnable() {
                     @Override
                     public void run() {
                         try {
                             playSpeech();
+                            Log.d("SpeechService", "Runnable executed");
 
                             // Wait for it to start speaking
                             while (!mTextToSpeech.isSpeaking()) {}
@@ -105,7 +111,7 @@ public class SpeechService extends Service
             ttsUnder20(mSpeech);
         }
 
-        Log.d(DetectorService.LOG_TAG, "User notified");
+        Log.d(DetectorService.LOG_TAG, "USER NOTIFIED: " + mSpeech);
     }
 
 
@@ -114,6 +120,9 @@ public class SpeechService extends Service
             mTextToSpeech.stop();
             mTextToSpeech.shutdown();
         }
+
+        mSpeechHandler.removeCallbacksAndMessages(null);
+        stopSelf();
     }
 
 
