@@ -9,5 +9,5 @@ import android.content.SharedPreferences;
 public class FileManager {
 
     public static final String FILE_NAME = "preferences";
-
+    public static final String FIRST_TIME = "FIRST_TIME";
 }

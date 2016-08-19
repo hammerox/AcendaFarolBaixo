@@ -59,7 +59,8 @@
             style="@style/TextAppearance.AppCompat.Display1" />
 
         <TextView
-            android:text="@string/detector_instructions_1_off"
+            android:id="@+id/detector_instructions_1"
+            android:text="@string/detector_instructions_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
@@ -72,6 +73,7 @@
             style="@style/TextAppearance.AppCompat.Display1" />
 
         <TextView
+            android:id="@+id/detector_instructions_2"
             android:text="@string/detector_instructions_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,6 +87,7 @@
             style="@style/TextAppearance.AppCompat.Display1" />
 
         <TextView
+            android:id="@+id/detector_instructions_3"
             android:text="@string/detector_instructions_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

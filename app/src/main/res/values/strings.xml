@@ -21,8 +21,7 @@
     <string name="title_activity_alarm">AlarmActivity</string>
 
     <string name="detector_instructions">Como funciona?</string>
-    <string name="detector_instructions_1_off">Ative o dispositivo no botão acima</string>
-    <string name="detector_instructions_1_on">Dispositivo ativado</string>
+    <string name="detector_instructions_1">Ative o dispositivo no botão acima</string>
     <string name="detector_instructions_2">O aplicativo te notificará sempre que\nvocê estiver em um carro</string>
     <string name="detector_instructions_3">Acenda o farol baixo e não tome multas =)</string>
 

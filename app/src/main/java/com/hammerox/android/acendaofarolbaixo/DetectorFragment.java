@@ -14,11 +14,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
 import com.skyfishjy.library.RippleBackground;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,9 +30,14 @@ public class DetectorFragment extends Fragment {
 
     @BindView(R.id.detector_button) FancyButton mDetectorButton;
     @BindView(R.id.detector_ripple) RippleBackground mDetectorRipple;
+    @BindView(R.id.detector_instructions_1) TextView ruleOne;
+    @BindView(R.id.detector_instructions_2) TextView ruleTwo;
+    @BindView(R.id.detector_instructions_3) TextView ruleThree;
 
     private String mServiceName = DetectorService.class.getName();
     private ActivityManager mActivityManager;
+    private int colorActive;
+    private int colorInactive;
 
     private static final int LOCATION_PERMISSION_ID = 1001;
 
@@ -61,6 +67,9 @@ public class DetectorFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detector, container, false);
         ButterKnife.bind(this, view);
 
+        colorActive = ContextCompat.getColor(getContext(), R.color.text_secondary);
+        colorInactive = ContextCompat.getColor(getContext(), R.color.divider);
+
         return view;
     }
 
@@ -68,13 +77,29 @@ public class DetectorFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Find DetectorService running on background
-        // If found, toggle button to ON. If not, toggle to OFF
-        if (findService(mServiceName)) {
-            Log.v(DetectorService.LOG_TAG, "Found Service running");
-            mDetectorRipple.startRippleAnimation();
+        boolean isFirstTime = getActivity()
+                .getSharedPreferences(FileManager.FILE_NAME, Context.MODE_PRIVATE)
+                .getBoolean(FileManager.FIRST_TIME, true);
+
+        if (isFirstTime) {
+            // Enable detector if it's the first time...
+            enableDetector();
+            // And record that first time has passed
+            getActivity()
+                    .getSharedPreferences(FileManager.FILE_NAME, Context.MODE_PRIVATE)
+                    .edit()
+                    .putBoolean(FileManager.FIRST_TIME, false)
+                    .commit();
         } else {
-            mDetectorRipple.stopRippleAnimation();
+            // If it's not the first time...
+            // Look for DetectorService running on background
+            // If found, toggle button to ON. If not, toggle to OFF
+            if (findService(mServiceName)) {
+                Log.v(DetectorService.LOG_TAG, "Found Service running");
+                setButtonOn();
+            } else {
+                setButtonOff();
+            }
         }
     }
 
@@ -101,20 +126,42 @@ public class DetectorFragment extends Fragment {
                 return;
             }
 
-            // Enable detector
-            Intent intent = new Intent(getActivity(), DetectorService.class);
-            getActivity().startService(intent);
-            // Tell user
-            mDetectorRipple.startRippleAnimation();
-            Toast.makeText(getActivity(), R.string.detector_toast_on, Toast.LENGTH_LONG).show();
+            enableDetector();
         } else {
-            // Disable detector
-            Intent intent = new Intent(getActivity(), DetectorService.class);
-            getActivity().stopService(intent);
-            // Tell user
-            mDetectorRipple.stopRippleAnimation();
-            Toast.makeText(getActivity(), R.string.detector_toast_off, Toast.LENGTH_LONG).show();
+            disableDetector();
         }
+    }
+
+
+    private void enableDetector() {
+        Intent intent = new Intent(getActivity(), DetectorService.class);
+        getActivity().startService(intent);
+
+        setButtonOn();
+    }
+
+
+    private void disableDetector() {
+        Intent intent = new Intent(getActivity(), DetectorService.class);
+        getActivity().stopService(intent);
+
+        setButtonOff();
+    }
+
+
+    private void setButtonOn() {
+        ruleOne.setTextColor(colorInactive);
+        ruleTwo.setTextColor(colorActive);
+        ruleThree.setTextColor(colorActive);
+        mDetectorRipple.startRippleAnimation();
+    }
+
+
+    private void setButtonOff() {
+        ruleOne.setTextColor(colorActive);
+        ruleTwo.setTextColor(colorInactive);
+        ruleThree.setTextColor(colorInactive);
+        mDetectorRipple.stopRippleAnimation();
     }
 
 
