@@ -24,12 +24,6 @@ public class DetectorService extends Service
         implements OnActivityUpdatedListener {
 
     private boolean mNotifyUser;
-    private StringBuilder mTextLog;
-    private long mTimeNow;
-    private long mLastTime;
-    private SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-    private SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm - HH:mm");
-    private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
 
     public static final String LOG_TAG = "onActivityUpdated";
     public static final int NOTIFICATION_ID = 1;
@@ -42,7 +36,7 @@ public class DetectorService extends Service
         runAsForeground();
 
         // Start variables
-        mTextLog = new StringBuilder();
+//        mTextLog = new StringBuilder();
         mNotifyUser = true;
 
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
@@ -61,7 +55,7 @@ public class DetectorService extends Service
     @Override
     public void onActivityUpdated(DetectedActivity detectedActivity) {
         if (detectedActivity != null) {
-            showLog(detectedActivity);
+//            showLog(detectedActivity);
             alarmAlgorithm(detectedActivity);
         } else {
 //            mTextView.setText("Null activity");
@@ -77,8 +71,8 @@ public class DetectorService extends Service
         // Stop detector
         SmartLocation.with(this).activity().stop();
 
-        // Send log
-        sendEmailLog();
+//        // FOR DEBUGGING: Send log
+//        sendEmailLog();
 
         stopForeground(true);
         Log.d(LOG_TAG, "DetectorService STOPPED");
@@ -93,8 +87,8 @@ public class DetectorService extends Service
 
         mNotifyUser = false;
 
-        mTextLog.append("USER NOTIFIED")
-                .append("\n");
+//        mTextLog.append("USER NOTIFIED")
+//                .append("\n");
     }
 
 
@@ -102,32 +96,11 @@ public class DetectorService extends Service
         if (!mNotifyUser) {
             mNotifyUser = true;
 
-            mTextLog.append("FLAG RESET")
-                    .append("\n");
+//            mTextLog.append("FLAG RESET")
+//                    .append("\n");
 
             Log.d(LOG_TAG, "User is now prone to receive notification");
         }
-    }
-
-
-    public void showLog(DetectedActivity detectedActivity) {
-        long timeDiff = 0L;
-        mTimeNow = System.currentTimeMillis();
-
-        if (mLastTime != 0L) {
-            timeDiff = (mTimeNow - mLastTime) / DateUtils.SECOND_IN_MILLIS;
-        }
-
-        mTextLog.append(formatTime.format(mTimeNow))
-                .append(" - ")
-                .append(detectedActivity.toString().substring(23))
-                .append(" - ")
-                .append(timeDiff)
-                .append("\n");
-//        mTextView.setText(mTextLog.toString());
-        Log.d(LOG_TAG, detectedActivity.toString() + " seconds: " + timeDiff);
-
-        mLastTime = mTimeNow;
     }
 
 
@@ -151,29 +124,6 @@ public class DetectorService extends Service
     }
 
 
-    public void sendEmailLog() {
-        try {
-            mTimeNow = System.currentTimeMillis();
-
-            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.setType("message/rfc822");
-            emailIntent.putExtra(Intent.EXTRA_EMAIL  , debugEmailAddress);
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "LOG " + formatDate.format(mTimeNow));
-            emailIntent.putExtra(Intent.EXTRA_TEXT   , mTextLog.toString());
-
-            Intent sendIntent = Intent.createChooser(emailIntent, "Send e-mail with...");
-            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            getApplicationContext().startActivity(sendIntent);
-
-            Log.d(LOG_TAG, "Finished sending email...");
-        }
-        catch (android.content.ActivityNotFoundException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
     private void runAsForeground(){
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent= PendingIntent.getActivity(this, 0,
@@ -188,6 +138,57 @@ public class DetectorService extends Service
         startForeground(NOTIFICATION_ID, notification);
 
     }
+
+
+//    private StringBuilder mTextLog;
+//    private long mTimeNow;
+//    private long mLastTime;
+//    private SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
+//    private SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm - HH:mm");
+//    private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
+//
+//
+//    public void showLog(DetectedActivity detectedActivity) {
+//        long timeDiff = 0L;
+//        mTimeNow = System.currentTimeMillis();
+//
+//        if (mLastTime != 0L) {
+//            timeDiff = (mTimeNow - mLastTime) / DateUtils.SECOND_IN_MILLIS;
+//        }
+//
+//        mTextLog.append(formatTime.format(mTimeNow))
+//                .append(" - ")
+//                .append(detectedActivity.toString().substring(23))
+//                .append(" - ")
+//                .append(timeDiff)
+//                .append("\n");
+//        Log.d(LOG_TAG, detectedActivity.toString() + " seconds: " + timeDiff);
+//
+//        mLastTime = mTimeNow;
+//    }
+//
+//
+//    public void sendEmailLog() {
+//        try {
+//            mTimeNow = System.currentTimeMillis();
+//
+//            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+//            emailIntent.setType("message/rfc822");
+//            emailIntent.putExtra(Intent.EXTRA_EMAIL  , debugEmailAddress);
+//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "LOG " + formatDate.format(mTimeNow));
+//            emailIntent.putExtra(Intent.EXTRA_TEXT   , mTextLog.toString());
+//
+//            Intent sendIntent = Intent.createChooser(emailIntent, "Send e-mail with...");
+//            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//            getApplicationContext().startActivity(sendIntent);
+//
+//            Log.d(LOG_TAG, "Finished sending email...");
+//        }
+//        catch (android.content.ActivityNotFoundException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
 
 }
