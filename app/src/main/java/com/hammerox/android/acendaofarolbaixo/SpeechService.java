@@ -27,6 +27,7 @@ public class SpeechService extends Service
     private int mSpeechInterval = 15000; // 15 seconds by default, can be changed later
     private Handler mSpeechHandler;
     private Runnable mSpeechRunnable;
+    private boolean isToSpeak;
 
 
     @Override
@@ -37,7 +38,9 @@ public class SpeechService extends Service
 
         mSpeech = getSharedPreferences(FileManager.FILE_NAME, Context.MODE_PRIVATE)
                 .getString(speechKey, speechDefault);
-        Log.d("SpeechService", "onCreate: " + mSpeech);
+        Log.d(DetectorService.LOG_TAG, "onCreate: " + mSpeech);
+
+        isToSpeak = true;
         mTextToSpeech = new TextToSpeech(this, this);
     }
 
@@ -49,6 +52,7 @@ public class SpeechService extends Service
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(DetectorService.LOG_TAG, "onStartCommand: " + mSpeech);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -81,18 +85,24 @@ public class SpeechService extends Service
                 mSpeechRunnable = new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            playSpeech();
-                            Log.d("SpeechService", "Runnable executed");
+                        if (isToSpeak) {
+                            try {
+                                playSpeech();
+                                Log.d("SpeechService", "Runnable executed");
 
-                            // Wait for it to start speaking
-                            while (!mTextToSpeech.isSpeaking()) {}
-                            // Wait for it to finish the speech
-                            while (mTextToSpeech.isSpeaking()) {}
-                        } finally {
-                            // 100% guarantee that this always happens, even if
-                            // your update method throws an exception
-                            mSpeechHandler.postDelayed(mSpeechRunnable, mSpeechInterval);
+                                // Wait for it to start speaking
+                                while (!mTextToSpeech.isSpeaking()) {
+                                }
+                                // Wait for it to finish the speech
+                                while (mTextToSpeech.isSpeaking()) {
+                                }
+                            } finally {
+                                // 100% guarantee that this always happens, even if
+                                // your update method throws an exception
+                                if (isToSpeak) {
+                                    mSpeechHandler.postDelayed(mSpeechRunnable, mSpeechInterval);
+                                }
+                            }
                         }
                     }
                 };
@@ -116,12 +126,20 @@ public class SpeechService extends Service
 
 
     public void stopSpeech() {
+        isToSpeak = false;
+
+        // Stop speech
         if(mTextToSpeech !=null){
             mTextToSpeech.stop();
             mTextToSpeech.shutdown();
         }
 
+        // Wait for handler to exist
+        while (mSpeechHandler == null) {}
+        Log.d(DetectorService.LOG_TAG, "Handler is not null");
+
         mSpeechHandler.removeCallbacksAndMessages(null);
+        Log.d(DetectorService.LOG_TAG, "Removed callbacks and messages");
         stopSelf();
     }
 
