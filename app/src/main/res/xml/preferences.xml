@@ -50,6 +50,12 @@
             android:title="@string/pref_boot_title"
             android:summary="@string/pref_boot_summary"
             android:defaultValue="true" />
+
+        <PreferenceScreen
+            android:title="Historic"
+            android:summary="View dates and times that alarm has been triggered" >
+            <intent android:action="com.hammerox.android.HISTORIC" />
+        </PreferenceScreen>
     </PreferenceCategory>
 
 
