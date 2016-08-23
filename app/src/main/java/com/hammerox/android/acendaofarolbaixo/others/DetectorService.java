@@ -38,7 +38,6 @@ public class DetectorService extends Service
         runAsForeground();
 
         // Start variables
-//        mTextLog = new StringBuilder();
         mNotifyUser = true;
 
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
@@ -57,10 +56,27 @@ public class DetectorService extends Service
     @Override
     public void onActivityUpdated(DetectedActivity detectedActivity) {
         if (detectedActivity != null) {
-//            showLog(detectedActivity);
-            alarmAlgorithm(detectedActivity);
+            int activityType = detectedActivity.getType();
+
+            if (detectedActivity.getConfidence() == 100) {
+                switch (activityType) {
+                    case DetectedActivity.IN_VEHICLE:
+                        if (mNotifyUser) launchAlarm();
+                        mNotifyUser = false;
+                        break;
+                    case DetectedActivity.STILL:
+                    case DetectedActivity.TILTING:
+                        // Do nothing
+                        break;
+                    default:
+                        mNotifyUser = true;
+                        Log.d(LOG_TAG, "User is now prone to receive notification");
+                        break;
+                }
+            }
+
+            Log.d(LOG_TAG, detectedActivity.toString());
         } else {
-//            mTextView.setText("Null activity");
             Log.d(LOG_TAG, "Null activity");
         }
     }
@@ -72,9 +88,6 @@ public class DetectorService extends Service
 
         // Stop detector
         SmartLocation.with(this).activity().stop();
-
-//        // FOR DEBUGGING: Send log
-//        sendEmailLog();
 
         stopForeground(true);
         Log.d(LOG_TAG, "DetectorService STOPPED");
@@ -90,31 +103,6 @@ public class DetectorService extends Service
 
         // Save date and time
         FileManager.insertDateAndTime(this);
-
-//        mTextLog.append("USER NOTIFIED")
-//                .append("\n");
-    }
-
-
-    public void alarmAlgorithm(DetectedActivity detectedActivity) {
-        int activityType = detectedActivity.getType();
-
-        if (detectedActivity.getConfidence() == 100) {
-            switch (activityType) {
-                case DetectedActivity.IN_VEHICLE:
-                    if (mNotifyUser) launchAlarm();
-                    mNotifyUser = false;
-                    break;
-                case DetectedActivity.STILL:
-                case DetectedActivity.TILTING:
-                    // Do nothing
-                    break;
-                default:
-                    mNotifyUser = true;
-                    Log.d(LOG_TAG, "User is now prone to receive notification");
-                    break;
-            }
-        }
     }
 
 
@@ -132,55 +120,5 @@ public class DetectorService extends Service
         startForeground(NOTIFICATION_ID, notification);
 
     }
-
-
-//    private StringBuilder mTextLog;
-//    private long mTimeNow;
-//    private long mLastTime;
-//    private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
-//
-//
-//    public void showLog(DetectedActivity detectedActivity) {
-//        long timeDiff = 0L;
-//        mTimeNow = System.currentTimeMillis();
-//
-//        if (mLastTime != 0L) {
-//            timeDiff = (mTimeNow - mLastTime) / DateUtils.SECOND_IN_MILLIS;
-//        }
-//
-//        mTextLog.append(formatTime.format(mTimeNow))
-//                .append(" - ")
-//                .append(detectedActivity.toString().substring(23))
-//                .append(" - ")
-//                .append(timeDiff)
-//                .append("\n");
-//        Log.d(LOG_TAG, detectedActivity.toString() + " seconds: " + timeDiff);
-//
-//        mLastTime = mTimeNow;
-//    }
-//
-//
-//    public void sendEmailLog() {
-//        try {
-//            mTimeNow = System.currentTimeMillis();
-//
-//            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-//            emailIntent.setType("message/rfc822");
-//            emailIntent.putExtra(Intent.EXTRA_EMAIL  , debugEmailAddress);
-//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "LOG " + formatDate.format(mTimeNow));
-//            emailIntent.putExtra(Intent.EXTRA_TEXT   , mTextLog.toString());
-//
-//            Intent sendIntent = Intent.createChooser(emailIntent, "Send e-mail with...");
-//            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//            getApplicationContext().startActivity(sendIntent);
-//
-//            Log.d(LOG_TAG, "Finished sending email...");
-//        }
-//        catch (android.content.ActivityNotFoundException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
 
 }

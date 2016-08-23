@@ -37,6 +37,7 @@ public class AlarmActivity extends AppCompatActivity{
     @BindString(R.string.pref_alarm_sound_key) String alarmSoundKey;
 
     public static final String EXIT_KEY = "EXIT";
+    public static final String SHOW_CONFIG_KEY = "SHOW_CONFIG";
 
     private SharedPreferences preferences;
     private boolean isTesting;
@@ -119,12 +120,27 @@ public class AlarmActivity extends AppCompatActivity{
     public void onOkayClick(Button button) {
         finish();
         stopEverything();
+
+        // Tell MainActivity to finish app
+        if (!isTesting) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(EXIT_KEY, true);
+            startActivity(intent);
+        }
     }
 
 
     @OnClick(R.id.alarm_config)
     public void onConfigClick(Button button) {
-        Toast.makeText(this, "Sorry, ainda em construção...", Toast.LENGTH_LONG).show();
+        finish();
+        stopEverything();
+
+        // Tell MainActivity to show config screen
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(SHOW_CONFIG_KEY, true);
+        startActivity(intent);
     }
 
 
@@ -144,14 +160,6 @@ public class AlarmActivity extends AppCompatActivity{
 
         // Stop animation
         stopAnimation();
-
-        // Tell MainActivity to finish app
-        if (!isTesting) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra(EXIT_KEY, true);
-            startActivity(intent);
-        }
     }
 
 

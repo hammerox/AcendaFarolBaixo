@@ -123,11 +123,11 @@ public class DetectorFragment extends Fragment {
     public void onToggleClicked(FancyButton button) {
         boolean switchOn = !findService(mServiceName);
         if (switchOn) {
-            // Location permission not granted
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
-                return;
-            }
+//            // Location permission not granted
+//            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
+//                return;
+//            }
 
             enableDetector();
         } else {

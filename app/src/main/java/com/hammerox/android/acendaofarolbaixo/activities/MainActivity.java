@@ -41,6 +41,13 @@ public class MainActivity extends AppCompatActivity
             finish();
             return;
         }
+
+        // Look for message from AlarmActivity to open configurations
+        if (getIntent().getBooleanExtra(AlarmActivity.SHOW_CONFIG_KEY, false)) {
+            if (layoutContainer.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                layoutContainer.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            }
+        }
     }
 
 
