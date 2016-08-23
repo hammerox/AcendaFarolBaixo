@@ -25,7 +25,7 @@ public class HistoricDatabase extends SQLiteOpenHelper {
 
 
 
-    HistoricDatabase(Context context) {
+    public HistoricDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

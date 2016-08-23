@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.hammerox.android.acendaofarolbaixo.others.DetectorService;
 import com.hammerox.android.acendaofarolbaixo.others.FileManager;
 import com.hammerox.android.acendaofarolbaixo.R;
+import com.hammerox.android.acendaofarolbaixo.others.WidgetProvider;
 import com.skyfishjy.library.RippleBackground;
 
 import butterknife.BindView;
@@ -152,18 +153,30 @@ public class DetectorFragment extends Fragment {
 
 
     private void setButtonOn() {
+        // Update button
         ruleOne.setTextColor(colorInactive);
         ruleTwo.setTextColor(colorActive);
         ruleThree.setTextColor(colorActive);
         mDetectorRipple.startRippleAnimation();
+
+        // Update widget
+        Intent updateIntent = new Intent(WidgetProvider.ACTION_DETECTOR_UPDATED);
+        updateIntent.putExtra(WidgetProvider.STATUS_KEY, true);
+        getContext().sendBroadcast(updateIntent);
     }
 
 
     private void setButtonOff() {
+        // Update button
         ruleOne.setTextColor(colorActive);
         ruleTwo.setTextColor(colorInactive);
         ruleThree.setTextColor(colorInactive);
         mDetectorRipple.stopRippleAnimation();
+
+        // Update widget
+        Intent updateIntent = new Intent(WidgetProvider.ACTION_DETECTOR_UPDATED);
+        updateIntent.putExtra(WidgetProvider.STATUS_KEY, false);
+        getContext().sendBroadcast(updateIntent);
     }
 
 

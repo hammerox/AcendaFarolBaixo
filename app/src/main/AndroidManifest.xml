@@ -60,6 +60,19 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".others.WidgetProvider"
+            android:label="Acenda o Farol Baixo" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.hammerox.android.acendaofarolbaixo.ACTION_DETECTOR_UPDATED" />
+                <action android:name="com.hammerox.android.acendaofarolbaixo.ACTION_WIDGET_CLICK" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
+
         <provider
             android:name=".data.HistoricProvider"
             android:authorities="hammerox.android.acendaofarolbaixo"
