@@ -58,5 +58,6 @@ public class DatabaseTest extends AndroidTestCase {
             removed = resolver.delete(HistoricProvider.CONTENT_URI, where, args);
         }
         assertTrue(removed > 0);
+        c.close();
     }
 }

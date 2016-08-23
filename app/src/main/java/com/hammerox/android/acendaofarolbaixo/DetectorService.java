@@ -7,12 +7,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
-
-import java.text.SimpleDateFormat;
 
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
@@ -85,22 +82,11 @@ public class DetectorService extends Service
         alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(alarmIntent);
 
-        mNotifyUser = false;
+        // Save date and time
+        FileManager.insertDateAndTime(this);
 
 //        mTextLog.append("USER NOTIFIED")
 //                .append("\n");
-    }
-
-
-    public void resetNotificationFlag() {
-        if (!mNotifyUser) {
-            mNotifyUser = true;
-
-//            mTextLog.append("FLAG RESET")
-//                    .append("\n");
-
-            Log.d(LOG_TAG, "User is now prone to receive notification");
-        }
     }
 
 
@@ -111,13 +97,15 @@ public class DetectorService extends Service
             switch (activityType) {
                 case DetectedActivity.IN_VEHICLE:
                     if (mNotifyUser) launchAlarm();
+                    mNotifyUser = false;
                     break;
                 case DetectedActivity.STILL:
                 case DetectedActivity.TILTING:
                     // Do nothing
                     break;
                 default:
-                    resetNotificationFlag();
+                    mNotifyUser = true;
+                    Log.d(LOG_TAG, "User is now prone to receive notification");
                     break;
             }
         }
@@ -143,8 +131,6 @@ public class DetectorService extends Service
 //    private StringBuilder mTextLog;
 //    private long mTimeNow;
 //    private long mLastTime;
-//    private SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-//    private SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm - HH:mm");
 //    private String[] debugEmailAddress = new String[]{"EMAIL_ADDRESS"};
 //
 //
