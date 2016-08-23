@@ -34,6 +34,17 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Look for message from AlarmActivity to finish app
+        if (getIntent().getBooleanExtra(AlarmActivity.EXIT_KEY, false)) {
+            finish();
+            return;
+        }
+    }
+
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
 
     }

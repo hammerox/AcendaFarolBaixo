@@ -36,7 +36,10 @@ public class AlarmActivity extends AppCompatActivity{
     @BindString(R.string.pref_alarm_type_key) String alarmTypeKey;
     @BindString(R.string.pref_alarm_sound_key) String alarmSoundKey;
 
+    public static final String EXIT_KEY = "EXIT";
+
     private SharedPreferences preferences;
+    private boolean isTesting;
     private boolean isToVibrate;
     private boolean isToAlarm;
     private boolean isToSpeech;
@@ -72,6 +75,9 @@ public class AlarmActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_alarm);
         ButterKnife.bind(this);
+
+        // Get intent messages
+        isTesting = getIntent().getBooleanExtra(DetectorService.IS_TESTING_KEY, true);
 
         // Get preferences
         preferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
@@ -138,6 +144,14 @@ public class AlarmActivity extends AppCompatActivity{
 
         // Stop animation
         stopAnimation();
+
+        // Tell MainActivity to finish app
+        if (!isTesting) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(EXIT_KEY, true);
+            startActivity(intent);
+        }
     }
 
 

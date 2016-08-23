@@ -23,10 +23,12 @@ import io.nlopez.smartlocation.SmartLocation;
 public class DetectorService extends Service
         implements OnActivityUpdatedListener {
 
-    private boolean mNotifyUser;
-
+    public static final String IS_TESTING_KEY = "isTesting";
     public static final String LOG_TAG = "onActivityUpdated";
     public static final int NOTIFICATION_ID = 1;
+
+    private boolean mNotifyUser;
+
 
     @Override
     public void onCreate() {
@@ -83,6 +85,7 @@ public class DetectorService extends Service
         // Launch alarm screen
         Intent alarmIntent = new Intent(this, AlarmActivity.class);
         alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        alarmIntent.putExtra(IS_TESTING_KEY, false);
         startActivity(alarmIntent);
 
         // Save date and time
