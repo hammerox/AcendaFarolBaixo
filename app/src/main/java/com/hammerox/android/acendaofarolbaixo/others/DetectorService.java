@@ -1,4 +1,4 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.others;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -10,6 +10,9 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
+import com.hammerox.android.acendaofarolbaixo.R;
+import com.hammerox.android.acendaofarolbaixo.activities.AlarmActivity;
+import com.hammerox.android.acendaofarolbaixo.activities.MainActivity;
 
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;

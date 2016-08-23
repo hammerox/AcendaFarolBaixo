@@ -1,4 +1,4 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.data;
 
 import android.provider.BaseColumns;
 

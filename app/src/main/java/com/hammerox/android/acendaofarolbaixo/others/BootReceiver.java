@@ -1,8 +1,10 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.others;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.hammerox.android.acendaofarolbaixo.R;
 
 /**
  * Created by Mauricio on 14-Aug-16.

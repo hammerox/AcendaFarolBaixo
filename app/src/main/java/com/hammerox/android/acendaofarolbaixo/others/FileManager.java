@@ -1,8 +1,11 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.others;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+
+import com.hammerox.android.acendaofarolbaixo.data.HistoricContract;
+import com.hammerox.android.acendaofarolbaixo.data.HistoricProvider;
 
 import java.text.DateFormat;
 import java.util.Date;

@@ -3,7 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/primary"
-             tools:context="com.hammerox.android.acendaofarolbaixo.AlarmActivity">
+             tools:context=".activities.AlarmActivity">
 
     <LinearLayout
         android:orientation="vertical"

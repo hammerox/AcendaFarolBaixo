@@ -1,4 +1,4 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.hammerox.android.acendaofarolbaixo.others.DetectorService;
+import com.hammerox.android.acendaofarolbaixo.R;
+import com.hammerox.android.acendaofarolbaixo.others.SpeechService;
 
 import butterknife.BindString;
 import butterknife.BindView;

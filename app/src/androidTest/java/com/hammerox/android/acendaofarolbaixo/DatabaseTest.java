@@ -7,6 +7,10 @@ import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 
+import com.hammerox.android.acendaofarolbaixo.data.HistoricContract;
+import com.hammerox.android.acendaofarolbaixo.data.HistoricDatabase;
+import com.hammerox.android.acendaofarolbaixo.data.HistoricProvider;
+
 /**
  * Created by Mauricio on 22-Aug-16.
  */

@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -29,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".AlarmActivity"
+            android:name=".activities.AlarmActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_alarm"
             android:theme="@style/FullscreenTheme">
@@ -39,29 +39,29 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".HistoricActivity">
+        <activity android:name=".activities.HistoricActivity">
             <intent-filter>
                 <action android:name="com.hammerox.android.HISTORIC"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
-        <service android:name=".DetectorService"/>
+        <service android:name=".others.DetectorService"/>
 
         <service
-            android:name=".SpeechService"
+            android:name=".others.SpeechService"
             android:enabled="true"
             android:exported="false"
             android:process="com.hammerox.android.acendaofarolbaixo.SpeechService"/>
 
-        <receiver android:name=".BootReceiver">
+        <receiver android:name=".others.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
         <provider
-            android:name=".HistoricProvider"
+            android:name=".data.HistoricProvider"
             android:authorities="hammerox.android.acendaofarolbaixo"
             android:exported="false"/>
 

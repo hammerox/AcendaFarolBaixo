@@ -1,10 +1,13 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.activities;
 
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.hammerox.android.acendaofarolbaixo.R;
+import com.hammerox.android.acendaofarolbaixo.fragments.DetectorFragment;
+import com.hammerox.android.acendaofarolbaixo.fragments.PrefFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.BindView;

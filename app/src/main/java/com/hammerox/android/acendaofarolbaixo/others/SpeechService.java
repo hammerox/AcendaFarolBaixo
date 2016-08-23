@@ -1,4 +1,4 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.others;
 
 import android.annotation.TargetApi;
 import android.app.Service;
@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.hammerox.android.acendaofarolbaixo.R;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -134,7 +136,7 @@ public class SpeechService extends Service
             mTextToSpeech.shutdown();
         }
 
-        // Wait for handler to exist
+        // Wait for handler to finish initialization before removing it
         while (mSpeechHandler == null) {}
         Log.d(DetectorService.LOG_TAG, "Handler is not null");
 

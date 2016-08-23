@@ -1,20 +1,19 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.activities;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.hammerox.android.acendaofarolbaixo.data.HistoricContract;
+import com.hammerox.android.acendaofarolbaixo.data.HistoricProvider;
+import com.hammerox.android.acendaofarolbaixo.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class HistoricActivity extends AppCompatActivity {
 
@@ -31,7 +30,7 @@ public class HistoricActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         adapter = new SimpleCursorAdapter(getBaseContext(),
-                R.layout.list_layout,
+                R.layout.adapter_historic,
                 null,
                 columns,
                 new int[] { R.id.item_date , R.id.item_time}, 0);
@@ -42,7 +41,7 @@ public class HistoricActivity extends AppCompatActivity {
 
     private void refreshValuesFromContentProvider() {
         CursorLoader cursorLoader = new CursorLoader(getBaseContext(), HistoricProvider.CONTENT_URI,
-                null, null, null, null);
+                null, null, null, HistoricContract._ID + " DESC");
         Cursor c = cursorLoader.loadInBackground();
         adapter.swapCursor(c);
     }

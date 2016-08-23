@@ -1,4 +1,4 @@
-package com.hammerox.android.acendaofarolbaixo;
+package com.hammerox.android.acendaofarolbaixo.fragments;
 
 import android.Manifest;
 import android.app.ActivityManager;
@@ -17,9 +17,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.hammerox.android.acendaofarolbaixo.others.DetectorService;
+import com.hammerox.android.acendaofarolbaixo.others.FileManager;
+import com.hammerox.android.acendaofarolbaixo.R;
 import com.skyfishjy.library.RippleBackground;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

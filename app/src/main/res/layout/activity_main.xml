@@ -9,7 +9,7 @@
     android:gravity="bottom"
     sothree:umanoPanelHeight="68dp"
     sothree:umanoShadowHeight="4dp"
-    app:context="com.hammerox.android.acendaofarolbaixo.MainActivity">
+    app:context=".activities.MainActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
 
         <fragment
             android:id="@+id/fragment_detector"
-            android:name="com.hammerox.android.acendaofarolbaixo.DetectorFragment"
+            android:name="com.hammerox.android.acendaofarolbaixo.fragments.DetectorFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?android:attr/actionBarSize"/>
@@ -55,7 +55,7 @@
 
         <fragment
             android:id="@+id/fragment_prefs"
-            android:name="com.hammerox.android.acendaofarolbaixo.PrefFragment"
+            android:name="com.hammerox.android.acendaofarolbaixo.fragments.PrefFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
