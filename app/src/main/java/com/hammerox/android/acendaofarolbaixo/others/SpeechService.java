@@ -36,7 +36,7 @@ public class SpeechService extends Service
     public void onCreate() {
         super.onCreate();
         String speechKey = getString(R.string.pref_alarm_speech_key);
-        String speechDefault = getString(R.string.pref_speech_default);
+        String speechDefault = getString(R.string.pref_alarm_speech_default);
 
         mSpeech = getSharedPreferences(FileManager.FILE_NAME, Context.MODE_PRIVATE)
                 .getString(speechKey, speechDefault);

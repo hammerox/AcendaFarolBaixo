@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/historic_emptyview"
-        android:text="Historic is empty"
+        android:text="@string/historic_emptytext"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
