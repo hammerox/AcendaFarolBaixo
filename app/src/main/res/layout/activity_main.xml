@@ -41,6 +41,7 @@
         android:layout_height="wrap_content">
 
         <FrameLayout
+            android:contentDescription="@string/alarm_config_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?android:attr/listPreferredItemHeight"

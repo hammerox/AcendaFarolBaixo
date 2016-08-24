@@ -31,6 +31,8 @@ public class WidgetProvider extends AppWidgetProvider {
     private String mServiceName = DetectorService.class.getName();
     private ActivityManager mActivityManager;
     private FirebaseAnalytics mAnalytics;
+    private String textOn;
+    private String textOff;
 
 
     @Override
@@ -39,6 +41,7 @@ public class WidgetProvider extends AppWidgetProvider {
         String action = intent.getAction();
         Log.d("WidgetProvider", action);
 
+        // Get analytics object
         if (mAnalytics == null) {
             mAnalytics = FirebaseAnalytics.getInstance(context);
         }
@@ -59,8 +62,15 @@ public class WidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d("WidgetProvider", "onUpdate");
 
+        // Get analytics object
         if (mAnalytics == null) {
             mAnalytics = FirebaseAnalytics.getInstance(context);
+        }
+
+        // Get strings
+        if (textOn == null || textOff == null) {
+            textOn = context.getResources().getString(R.string.detector_button_text_on);
+            textOff = context.getResources().getString(R.string.detector_button_text_off);
         }
 
         for (int widgetId : appWidgetIds) {
@@ -70,8 +80,10 @@ public class WidgetProvider extends AppWidgetProvider {
 
             if (findService(context, mServiceName)) {
                 widget.setImageViewResource(R.id.button, R.drawable.ic_beam_button_on);
+                widget.setContentDescription(R.id.button, textOn);
             } else {
                 widget.setImageViewResource(R.id.button, R.drawable.ic_beam_button_off);
+                widget.setContentDescription(R.id.button, textOff);
             }
 
             widget.setOnClickPendingIntent(
@@ -108,6 +120,11 @@ public class WidgetProvider extends AppWidgetProvider {
                 thisAppWidgetComponentName);
         onUpdate(context, appWidgetManager, appWidgetIds);
 
+        // Get strings
+        if (textOn == null || textOff == null) {
+            textOn = context.getResources().getString(R.string.detector_button_text_on);
+            textOff = context.getResources().getString(R.string.detector_button_text_off);
+        }
 
         for (int widgetId : appWidgetIds) {
             RemoteViews widget = new RemoteViews(
@@ -116,8 +133,10 @@ public class WidgetProvider extends AppWidgetProvider {
 
             if (isToSetOn) {
                 widget.setImageViewResource(R.id.button, R.drawable.ic_beam_button_on);
+                widget.setContentDescription(R.id.button, textOn);
             } else {
                 widget.setImageViewResource(R.id.button, R.drawable.ic_beam_button_off);
+                widget.setContentDescription(R.id.button, textOff);
             }
 
             appWidgetManager.updateAppWidget(widgetId, widget);

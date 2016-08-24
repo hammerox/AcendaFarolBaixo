@@ -21,6 +21,7 @@ import com.hammerox.android.acendaofarolbaixo.R;
 import com.hammerox.android.acendaofarolbaixo.others.WidgetProvider;
 import com.skyfishjy.library.RippleBackground;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,6 +35,8 @@ public class DetectorFragment extends Fragment {
     @BindView(R.id.detector_instructions_1) TextView ruleOne;
     @BindView(R.id.detector_instructions_2) TextView ruleTwo;
     @BindView(R.id.detector_instructions_3) TextView ruleThree;
+    @BindString(R.string.detector_button_text_on) String buttonOn;
+    @BindString(R.string.detector_button_text_off) String buttonOff;
 
     public static final int LOCATION_PERMISSION_ID = 1001;
     public static final String CLICK_DETECTOR = "CLICK_DETECTOR";
@@ -162,6 +165,8 @@ public class DetectorFragment extends Fragment {
         ruleOne.setTextColor(colorInactive);
         ruleTwo.setTextColor(colorActive);
         ruleThree.setTextColor(colorActive);
+        mDetectorButton.setContentDescription(buttonOn);
+
         mDetectorRipple.startRippleAnimation();
 
         // Update widget
@@ -176,6 +181,8 @@ public class DetectorFragment extends Fragment {
         ruleOne.setTextColor(colorActive);
         ruleTwo.setTextColor(colorInactive);
         ruleThree.setTextColor(colorInactive);
+        mDetectorButton.setContentDescription(buttonOff);
+
         mDetectorRipple.stopRippleAnimation();
 
         // Update widget

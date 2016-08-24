@@ -40,6 +40,9 @@
 
     <!--ACTIVITIES AND VIEWS-->
 
+    <string name="detector_button_text_on">Detector is on</string>
+    <string name="detector_button_text_off">Detector is off</string>
+
     <string name="detector_instructions">How it works?</string>
     <string name="detector_instructions_1">Activate the device on the button above</string>
     <string name="detector_instructions_2">The application will notify you \neverytime you are on a car</string>

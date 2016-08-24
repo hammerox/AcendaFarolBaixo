@@ -24,4 +24,6 @@
     <string name="pref_alarm_speech_title">Discurso da Voz</string>
     <string name="pref_alarm_speech_summary">Altere a frase que o sistema dirá</string>
     <string name="pref_alarm_speech_default">Acenda o farol baixo</string>
+    <string name="detector_button_text_off">Detector está desligado</string>
+    <string name="detector_button_text_on">Detector está ligado</string>
 </resources>
