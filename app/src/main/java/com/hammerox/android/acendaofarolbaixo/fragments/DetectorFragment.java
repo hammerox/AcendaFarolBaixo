@@ -1,13 +1,10 @@
 package com.hammerox.android.acendaofarolbaixo.fragments;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -17,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hammerox.android.acendaofarolbaixo.others.DetectorService;
 import com.hammerox.android.acendaofarolbaixo.others.FileManager;
 import com.hammerox.android.acendaofarolbaixo.R;
@@ -37,13 +35,14 @@ public class DetectorFragment extends Fragment {
     @BindView(R.id.detector_instructions_2) TextView ruleTwo;
     @BindView(R.id.detector_instructions_3) TextView ruleThree;
 
+    public static final int LOCATION_PERMISSION_ID = 1001;
+    public static final String CLICK_DETECTOR = "CLICK_DETECTOR";
+
     private String mServiceName = DetectorService.class.getName();
     private ActivityManager mActivityManager;
     private int colorActive;
     private int colorInactive;
-
-    private static final int LOCATION_PERMISSION_ID = 1001;
-
+    private FirebaseAnalytics mAnalytics;
     private OnFragmentInteractionListener mListener;
 
     public DetectorFragment() {
@@ -69,6 +68,7 @@ public class DetectorFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detector, container, false);
         ButterKnife.bind(this, view);
+        mAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         colorActive = ContextCompat.getColor(getContext(), R.color.text_secondary);
         colorInactive = ContextCompat.getColor(getContext(), R.color.divider);
@@ -92,7 +92,7 @@ public class DetectorFragment extends Fragment {
                     .getSharedPreferences(FileManager.FILE_NAME, Context.MODE_PRIVATE)
                     .edit()
                     .putBoolean(FileManager.FIRST_TIME, false)
-                    .commit();
+                    .apply();
         } else {
             // If it's not the first time...
             // Look for DetectorService running on background
@@ -133,6 +133,11 @@ public class DetectorFragment extends Fragment {
         } else {
             disableDetector();
         }
+
+        // Report analytics
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, CLICK_DETECTOR);
+        mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
 

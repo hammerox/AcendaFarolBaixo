@@ -8,6 +8,7 @@
         android:title="Alarm settings">
 
         <PreferenceScreen
+            android:key="@string/pref_alarm_test_key"
             android:title="Test Alarm"
             android:summary="Click here to trigger the alarm" >
             <intent android:action="com.hammerox.android.ALARM_SCREEN" />
@@ -52,6 +53,7 @@
             android:defaultValue="true" />
 
         <PreferenceScreen
+            android:key="@string/pref_historic_key"
             android:title="Historic"
             android:summary="View dates and times that alarm has been triggered" >
             <intent android:action="com.hammerox.android.HISTORIC" />

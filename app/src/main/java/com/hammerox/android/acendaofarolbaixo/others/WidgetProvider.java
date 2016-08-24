@@ -7,9 +7,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hammerox.android.acendaofarolbaixo.R;
 
 /**
@@ -22,9 +24,13 @@ public class WidgetProvider extends AppWidgetProvider {
     public static final String ACTION_WIDGET_CLICK =
             "com.hammerox.android.acendaofarolbaixo.ACTION_WIDGET_CLICK";
     public static final String STATUS_KEY = "STATUS";
+    public static final String DETECTOR_STATE = "DETECTOR_STATE";
+    public static final String DETECTOR_ON = "ON";
+    public static final String DETECTOR_OFF = "OFF";
 
     private String mServiceName = DetectorService.class.getName();
     private ActivityManager mActivityManager;
+    private FirebaseAnalytics mAnalytics;
 
 
     @Override
@@ -32,6 +38,10 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         String action = intent.getAction();
         Log.d("WidgetProvider", action);
+
+        if (mAnalytics == null) {
+            mAnalytics = FirebaseAnalytics.getInstance(context);
+        }
 
         switch (action) {
             case ACTION_DETECTOR_UPDATED:
@@ -48,6 +58,11 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d("WidgetProvider", "onUpdate");
+
+        if (mAnalytics == null) {
+            mAnalytics = FirebaseAnalytics.getInstance(context);
+        }
+
         for (int widgetId : appWidgetIds) {
             RemoteViews widget = new RemoteViews(
                     context.getPackageName(),
@@ -107,6 +122,13 @@ public class WidgetProvider extends AppWidgetProvider {
 
             appWidgetManager.updateAppWidget(widgetId, widget);
         }
+
+        // Report analytics
+        Bundle bundle = new Bundle();
+        String param = (isToSetOn) ? DETECTOR_ON : DETECTOR_OFF;
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, DETECTOR_STATE);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, param);
+        mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
 

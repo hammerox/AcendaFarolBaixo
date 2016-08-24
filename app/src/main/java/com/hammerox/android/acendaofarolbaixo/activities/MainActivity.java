@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hammerox.android.acendaofarolbaixo.R;
 import com.hammerox.android.acendaofarolbaixo.fragments.DetectorFragment;
 import com.hammerox.android.acendaofarolbaixo.fragments.PrefFragment;
