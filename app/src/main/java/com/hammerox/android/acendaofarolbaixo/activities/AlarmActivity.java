@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hammerox.android.acendaofarolbaixo.others.DetectorService;
 import com.hammerox.android.acendaofarolbaixo.R;
 import com.hammerox.android.acendaofarolbaixo.others.SpeechService;
@@ -38,6 +39,9 @@ public class AlarmActivity extends AppCompatActivity{
 
     public static final String EXIT_KEY = "EXIT";
     public static final String SHOW_CONFIG_KEY = "SHOW_CONFIG";
+    public static final String ALARM_TRIGGERED = "ALARM_TRIGGERED";
+    public static final String CLICK_ALARM_OK = "CLICK_ALARM_OK";
+    public static final String CLICK_ALARM_CONFIG = "CLICK_ALARM_CONFIG";
 
     private SharedPreferences preferences;
     private boolean isTesting;
@@ -45,6 +49,7 @@ public class AlarmActivity extends AppCompatActivity{
     private boolean isToAlarm;
     private boolean isToSpeech;
 
+    private FirebaseAnalytics mAnalytics;
     private long[] vibratePattern = {0, 500, 1000};
     private Vibrator vibrator;
     private Ringtone mRingtone;
@@ -79,6 +84,14 @@ public class AlarmActivity extends AppCompatActivity{
 
         // Get intent messages
         isTesting = getIntent().getBooleanExtra(DetectorService.IS_TESTING_KEY, true);
+
+        // Report analytics if alarm is not a test
+        mAnalytics = FirebaseAnalytics.getInstance(this);
+        if (!isTesting) {
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, ALARM_TRIGGERED);
+            mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        }
 
         // Get preferences
         preferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
@@ -121,8 +134,13 @@ public class AlarmActivity extends AppCompatActivity{
         finish();
         stopEverything();
 
-        // Tell MainActivity to finish app
         if (!isTesting) {
+            // Report click to analytics
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, CLICK_ALARM_OK);
+            mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+            // Tell MainActivity to finish app
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra(EXIT_KEY, true);
@@ -135,6 +153,13 @@ public class AlarmActivity extends AppCompatActivity{
     public void onConfigClick(Button button) {
         finish();
         stopEverything();
+
+        if (!isTesting) {
+            // Report click to analytics
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, CLICK_ALARM_CONFIG);
+            mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        }
 
         // Tell MainActivity to show config screen
         Intent intent = new Intent(this, MainActivity.class);
