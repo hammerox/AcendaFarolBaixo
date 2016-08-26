@@ -1,5 +1,7 @@
 package com.hammerox.android.acendaofarolbaixo.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import com.hammerox.android.acendaofarolbaixo.fragments.DetectorFragment;
 import com.hammerox.android.acendaofarolbaixo.fragments.PrefFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity
         implements DetectorFragment.OnFragmentInteractionListener,
                     PrefFragment.OnFragmentInteractionListener {
 
+    @BindString(R.string.pref_file_name) String fileName;
     @BindView(R.id.activity_main_toolbar) Toolbar toolbar;
     @BindView(R.id.activity_main_layout_container) SlidingUpPanelLayout layoutContainer;
 
@@ -38,7 +42,11 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         // Look for message from AlarmActivity to finish app
-        if (getIntent().getBooleanExtra(AlarmActivity.EXIT_KEY, false)) {
+        SharedPreferences pref = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        if (pref.getBoolean(AlarmActivity.EXIT_KEY, false)) {
+            pref.edit()
+                .putBoolean(AlarmActivity.EXIT_KEY, false)
+                .commit();
             finish();
             return;
         }

@@ -120,6 +120,13 @@ public class AlarmActivity extends AppCompatActivity{
 
         // Set animation
         startAnimation();
+
+        // Remember to exit MainActivity if is not testing
+        if (!isTesting) {
+            preferences.edit()
+                    .putBoolean(EXIT_KEY, true)
+                    .commit();
+        }
     }
 
 
@@ -142,8 +149,7 @@ public class AlarmActivity extends AppCompatActivity{
 
             // Tell MainActivity to finish app
             Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra(EXIT_KEY, true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
