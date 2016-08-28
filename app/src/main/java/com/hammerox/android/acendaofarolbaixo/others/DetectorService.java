@@ -65,9 +65,6 @@ public class DetectorService extends Service
                         mNotifyUser = false;
                         break;
                     case DetectedActivity.STILL:
-                        if (mNotifyUser) launchAlarm();
-                        mNotifyUser = false;
-                        break;
                     case DetectedActivity.TILTING:
                         // Do nothing
                         break;
