@@ -14,6 +14,8 @@ import com.hammerox.android.acendaofarolbaixo.R;
 import com.hammerox.android.acendaofarolbaixo.activities.AlarmActivity;
 import com.hammerox.android.acendaofarolbaixo.activities.MainActivity;
 
+import java.util.Date;
+
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 
@@ -26,8 +28,12 @@ public class DetectorService extends Service
     public static final String IS_TESTING_KEY = "isTesting";
     public static final String LOG_TAG = "onActivityUpdated";
     public static final int NOTIFICATION_ID = 1;
+    public static final long TIME_STILL_LIMIT = 600000; // 10 minutes
 
-    private boolean mNotifyUser;
+    private boolean alarmIsOn = true;
+    private boolean timerIsOn = false;
+    private Date mTimeNow = new Date();
+    private Date mTimeInstance = new Date();
 
 
     @Override
@@ -36,9 +42,6 @@ public class DetectorService extends Service
 
         // Run as foreground
         runAsForeground();
-
-        // Start variables
-        mNotifyUser = true;
 
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
         smartLocation.activity().start(this);
@@ -56,26 +59,40 @@ public class DetectorService extends Service
     @Override
     public void onActivityUpdated(DetectedActivity detectedActivity) {
         if (detectedActivity != null) {
+            Log.d(LOG_TAG, detectedActivity.toString());
             int activityType = detectedActivity.getType();
+
+            if (!alarmIsOn) {
+                if (timerIsOn) {
+                    if (timeIsUp()) {
+                        resetAlarmAndTimer();
+                    }
+                }
+            }
 
             if (detectedActivity.getConfidence() == 100) {
                 switch (activityType) {
                     case DetectedActivity.IN_VEHICLE:
-                        if (mNotifyUser) launchAlarm();
-                        mNotifyUser = false;
+                        if (alarmIsOn) {
+                            launchAlarm();
+                            turnAlarmOff();
+                        }
+                        if (timerIsOn) stopTimer();
                         break;
                     case DetectedActivity.STILL:
+                        if (!alarmIsOn) {
+                            if (!timerIsOn) startTimer();
+                        }
+                        break;
                     case DetectedActivity.TILTING:
                         // Do nothing
                         break;
                     default:
-                        mNotifyUser = true;
-                        Log.d(LOG_TAG, "User is now prone to receive notification");
+                        if (!alarmIsOn) resetAlarmAndTimer();
                         break;
                 }
             }
 
-            Log.d(LOG_TAG, detectedActivity.toString());
         } else {
             Log.d(LOG_TAG, "Null activity");
         }
@@ -118,7 +135,45 @@ public class DetectorService extends Service
                 .setContentIntent(pendingIntent).build();
 
         startForeground(NOTIFICATION_ID, notification);
+    }
 
+
+    private void startTimer() {
+        timerIsOn = true;
+        mTimeInstance.setTime(System.currentTimeMillis());
+        Log.d(LOG_TAG, "Timer STARTED");
+    }
+
+
+    private void stopTimer() {
+        timerIsOn = false;
+        Log.d(LOG_TAG, "Timer STOPPED");
+    }
+
+
+    private boolean timeIsUp() {
+        mTimeNow.setTime(System.currentTimeMillis());
+        long timeDiff = mTimeNow.getTime() - mTimeInstance.getTime();
+
+        int seconds = (int) (timeDiff / 1000);
+        int minutes = seconds / 60;
+        seconds     = seconds % 60;
+
+        Log.d(LOG_TAG, "Timer: " + String.format("%d:%02d", minutes, seconds));
+        return timeDiff >= TIME_STILL_LIMIT;
+    }
+
+
+    private void resetAlarmAndTimer() {
+        alarmIsOn = true;
+        if (timerIsOn) stopTimer();
+        Log.d(LOG_TAG, "User is now prone to receive notification");
+    }
+
+
+    private void turnAlarmOff() {
+        alarmIsOn = false;
+        if (timerIsOn) stopTimer();
     }
 
 }
