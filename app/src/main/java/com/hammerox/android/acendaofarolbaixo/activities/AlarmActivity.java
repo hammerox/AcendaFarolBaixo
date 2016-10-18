@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -32,6 +31,7 @@ import butterknife.OnClick;
 public class AlarmActivity extends AppCompatActivity{
 
     @BindView(R.id.alarm_icon) ImageView alarmIcon;
+    @BindView(R.id.alarm_okay) Button okayButton;
     @BindString(R.string.pref_file_name) String fileName;
     @BindString(R.string.pref_alarm_vibrate_key) String alarmVibrateKey;
     @BindString(R.string.pref_alarm_type_key) String alarmTypeKey;
@@ -48,13 +48,23 @@ public class AlarmActivity extends AppCompatActivity{
     private boolean isToVibrate;
     private boolean isToAlarm;
     private boolean isToSpeech;
+    private boolean isFirstTime = true;
 
     private FirebaseAnalytics mAnalytics;
     private long[] vibratePattern = {0, 500, 1000};
     private Vibrator vibrator;
     private Ringtone mRingtone;
     private int mAnimationInterval = 1000; // 1 seconds by default
+    private int mDestroyInterval = 30000;  // 30 seconds by default
+    private int mTimeLeft;
     private Handler mAnimationHandler;
+    private Runnable mDestroyTimer = new Runnable() {
+        @Override
+        public void run() {
+            onOkayClick();
+        }
+    };
+
     private Runnable mAnimationRunnable = new Runnable() {
         @Override
         public void run() {
@@ -64,6 +74,19 @@ public class AlarmActivity extends AppCompatActivity{
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
                 mAnimationHandler.postDelayed(mAnimationRunnable, mAnimationInterval);
+
+                if (!isTesting) {
+                    if (isFirstTime) {
+                        mAnimationHandler.postDelayed(mDestroyTimer, mDestroyInterval);
+                        mTimeLeft = mDestroyInterval/1000;
+                        isFirstTime = false;
+                    } else {
+                        if (mTimeLeft > 0) {
+                            mTimeLeft = mTimeLeft - (mAnimationInterval / 1000);
+                            okayButton.setText(String.valueOf(mTimeLeft));
+                        }
+                    }
+                }
             }
         }
     };
@@ -137,7 +160,7 @@ public class AlarmActivity extends AppCompatActivity{
 
 
     @OnClick(R.id.alarm_okay)
-    public void onOkayClick(Button button) {
+    public void onOkayClick() {
         finish();
         stopEverything();
 
@@ -156,7 +179,7 @@ public class AlarmActivity extends AppCompatActivity{
 
 
     @OnClick(R.id.alarm_config)
-    public void onConfigClick(Button button) {
+    public void onConfigClick() {
         finish();
         stopEverything();
 
