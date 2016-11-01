@@ -253,6 +253,7 @@ public class AlarmActivity extends AppCompatActivity{
 
     void stopAnimation() {
         mAnimationHandler.removeCallbacks(mAnimationRunnable);
+        mAnimationHandler.removeCallbacksAndMessages(null);
     }
 
 }
